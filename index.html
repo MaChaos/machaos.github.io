@@ -7,8 +7,8 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <style>
         body {
-            background-color: #3f4142;
-            font-family: Arial, Helvetica, sans-serif;
+            background-color: #F8F8F8;
+            font-family: Montserrat, Helvetica, sans-serif;
         }
         #title {
             background-color: #333; /* Black background color */
@@ -323,10 +323,16 @@
                 .enter()
                 .append("text")
                 .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
-                .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
-                .text(function(d){ return d.data.name })
+                .attr("y", function(d){ return d.y0+10})    // +20 to adjust position (lower)
+                .text(function(d){ return d.data.name + " \br " + d.value})
                 .attr("font-size", "10px")
-                .attr("fill", "white")
+                .attr("fill", function(d) {
+
+                    if (d.value < (2000))
+                        return "none";
+                    else
+                        return "#F8F8F8";
+                })
             
             // tree types map
             d3.treemap()
@@ -350,9 +356,20 @@
                 .append("text")
                 .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
                 .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
-                .text(function(d){ return d.data.name })
-                .attr("font-size", "20px")
-                .attr("fill", "white")
+                .text(function(d){ return d.data.name + " \br " + d.value})
+                .attr("font-size", "12px")
+                .attr("fill", function(d) {
+
+                    if (d.value < (typeMinMax[1]/2)) {
+                        if (d.value < 100)
+                            return "none";
+                        else
+                            return "black";
+                    }
+                        
+                    else
+                        return "#F8F8F8";
+                })
 
 
 
