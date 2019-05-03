@@ -1,0 +1,887 @@
+<html>
+    <head>
+        <title>project2</title>
+        <meta charset="UTF-8">
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/topojson.v2.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <style>
+        body {
+            background-color: #3f4142;
+        }
+        #title {
+            background-color: #333; /* Black background color */
+            position: fixed; /* Make it stick/fixed */
+            top: 0; /* Stay on top */
+            width: 100%; /* Full width */
+            transition: top 0.3s; /* Transition effect when sliding down (and up) */
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: #F8F8F8;
+            font-weight: bold;
+            font-size: 35px;
+            font-family: Montserrat;
+            text-align: center;
+            /* margin-right: auto; */
+            /* border-bottom:  */
+        }
+        #container {
+            margin-top: 80px;
+            display: flex;
+        }
+        #nycmap {
+            display: inline-block;
+        }
+
+        #map {
+            /* stroke: #fff; */
+            /* stroke-width: .5; */
+            /* stroke-dasharray: 1; */
+            fill:grey;
+        }
+        
+        #stationPopover { 
+            position: absolute;     
+            text-align: center;         
+            padding: 10px;       
+            font-size: 15px;
+            font-family: Montserrat;
+            background-color: #fff; 
+            border-width: 2px; 
+            border-style: solid;
+            border-color: red;
+            border-radius: 7px;     
+            pointer-events: none;
+            opacity: 0;     
+        }
+        #zipPopOver {
+            position: fixed;
+            text-align: center;         
+            padding: 10px;       
+            font-size: 15px;
+            font-family: Montserrat;
+            background-color: rgba(73, 92, 107, 0.8);
+            border-radius: 5px;
+            pointer-events: none;
+            opacity: 0;
+            color: white;
+            width: 200px;
+            left: 650px;
+            top: 120px;
+        }
+        /* .zipPopOver {
+
+        } */
+        #stops{
+            z-index:150;
+            fill:white;
+            stroke: #888;
+        }
+        #routes{
+            stroke: #888;
+            stroke-width:3;
+            fill:none;
+            z-index:1000;
+        }
+        #menu {
+            display: inline-block;
+        }
+        #subwayOption {
+            /* position: relative;
+            top:100px;
+            left:1000px; */
+            /* display: inline-block; */
+            width: 294px;
+            display: inline-block;
+            
+            background-color:  rgba(100, 116, 128, 0.2);
+            
+            border: none;
+            color: white;
+            padding: 10px 28px;
+            text-align: center;
+            text-decoration: none;
+            font-family: Helvetica;
+            display: inline-block;
+            font-size: 15px;
+            font-family: Montserrat;
+        }
+        #cuisineList {
+            /* padding-top: 200px; */
+            width: 294px;
+            display: inline-block;
+            height: 800px;
+            overflow-y: scroll;
+            list-style-type: none;
+            padding-left: 0;
+            /* color:aliceblue; */
+            font-family: Montserrat;
+            line-height: 30px;
+            /* background-color: rgba(100, 116, 128, 0.2); */
+            /* color: aliceblue; */
+        }
+        #cuisineList li {
+            color: #F8F8F8;
+            background-color: rgba(100, 116, 128, 0.2);
+            /* background-color: rgba(30, 215, 96, 0.1); */
+            padding-top: 5px;
+            padding-left: 10px;
+            margin-bottom: 2px;
+        }
+        #legend {
+            position: fixed;
+            top:120px;
+            font-family: Montserrat;
+            color: white;
+
+        }
+            
+        </style>
+    </head>
+    <body>
+        <!-- <div id="container"></div> -->
+        <div id="title"> Distribution of 85 Cuisine Types of Restaurants in NYC</div>
+        <div id="container">
+                \
+            <svg id="nycmap" width="900" height="1000"></svg>
+            <svg id="legend" width="300" height="100"></svg>
+            <div id="stationPopover"></div>
+            <div id="zipPopOver"></div>
+            <div id="menu">
+                <button id="subwayOption">Subway Route</button>
+                <div>
+                    <ul id="cuisineList"></ul>
+                </div>
+            </div>
+        </div>
+        
+
+        <script>
+            var prevScrollpos = window.pageYOffset;
+            window.onscroll = function() {
+            var currentScrollPos = window.pageYOffset;
+            if (prevScrollpos > currentScrollPos) {
+                document.getElementById("title").style.top = "0";
+            } else {
+                document.getElementById("title").style.top = "-70px";
+            }
+            prevScrollpos = currentScrollPos;
+            }
+        var sWidth = 1000, sHeight = 1000;
+        // const svga = d3.select("#container")
+        //                 .append("svg")
+        //                 .attr("id","nycmap")
+        //                 .style("width", sWidth + "px")
+        //                 .style("height", sHeight + "px");
+        const svga = d3.select("svg#nycmap");
+        const svgid1 = "nycmap";
+        const margin = { top: 20, right: 20, bottom: 20, left:20};
+        const mapWidth = sWidth - margin.left - margin.right;
+        const mapHeight = sHeight - margin.top - margin.bottom;
+        let tozoom = svga.append("g");
+        // resources
+        var nycsource= "nycmap.geojson";
+        var stops = "stops.csv";
+        var routes = "subwayline.geojson";
+        var clickCount = 0;
+        const requestData = async() => {
+            
+            const nycd = await d3.json(nycsource);
+            const routesData = await d3.json(routes);
+            const routeArray = routesData.features;
+            const stopsData = await d3.csv(stops);
+            
+            var projection = d3.geoConicConformal()
+                            .parallels([33, 45])
+                            .rotate([96, -39])
+                            .fitSize([sWidth, sHeight], nycd);
+            
+            var path = d3.geoPath()
+                        .projection(projection);
+            tozoom.append("g")
+                .attr("id","map")
+                .selectAll("path")
+                .data(nycd.features)
+                .enter().append("path")
+                .attr("d", path);
+            var rst = await d3.csv("./Restaurant_Grades.csv");
+            // console.log(rst);
+            
+            const zip = await d3.json("./nyczip.geojson");
+
+            const tree = await d3.csv("./2015_tree.csv");
+            // console.log(zip.features);
+            // console.log(zip.features['properties']['postalCode']);
+            
+            const zipMax = d3.max(zip.features, d=> d['properties']['postalCode']);
+            const zipMin = d3.min(zip.features, d=> d['properties']['postalCode'])
+            console.log(zipMax);
+            console.log(zipMin);
+            console.log(tree);
+            
+            const zipTreeMax = d3.max(tree, d=> Number(d['postcode']));
+            const zipTreeMin = d3.min(tree, d=> Number(d['postcode']));
+            const treeMinMax = d3.extent(tree, d=> Number(d['postcode']));
+            console.log(zipTreeMax);
+            console.log(zipTreeMin);
+            console.log(treeMinMax);
+            
+            var treeArray = [];
+            const treeMap = new Map();
+            tree.forEach((d,i) => {
+                var postcode = d['postcode'];
+                if (!treeMap.has(postcode)) {
+                    treeMap.set(postcode, true);
+                    
+                    treeArray.push({
+                        postcode: postcode,
+                        borough: d['borough'],
+                        number: 1
+                    })
+                    // cuisine.push(cui);
+                }
+                else if (treeMap.has(postcode)){
+                    treeArray.find(function(e) {
+                        return e.postcode == postcode;
+                    }).number++;
+                }
+            });
+            console.log(treeArray);
+            const treeNumMinMax = d3.extent(treeArray, d=> d['number']);
+            const ManhattanMinMax = d3.extent(treeArray, function(d) {
+                if (d['borough'] == "Manhattan") {
+                    return d['number'];
+                }
+            })
+            console.log(treeNumMinMax);
+            console.log(ManhattanMinMax);
+            
+            var treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, 3696]);
+            console.log(treeArray.find(function(n) {
+                                    return n.postcode == 83;
+                                }));
+            
+            function showTrees(){
+                // drawLegend(maxAll, scaleAll);
+                tozoom.append("g")
+                    .attr("id","nyctreemap")
+                    .selectAll("path")
+                    .data(zip.features)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .attr("id", function(d,i) {
+                        return "poly" + i;
+                    })
+                    .style("fill", function(d,i) {
+                        // console.log(d);
+                        // var id = d.properties.OBJECTID;
+                        var num = treeArray.find(function(n) {
+                                    return n.postcode == Number(d.properties.postalCode);
+                                });
+                        // console.log(num);
+                        if (num != undefined) {
+                            return treeColorScale(num.number);
+                        }
+                        else if (num == 0)
+                            return "grey"
+                        else if (num == undefined)
+                            return "grey";
+                        // return scale(i);
+                    })
+                    .attr("stroke-width", 0.5)
+                    .attr("stroke", "white")
+                    // .on("mouseover", function(d,i) {
+                    //     d3.select("#zipPopOver")
+                    //         .transition()
+                    //         .style("opacity", 1)
+                    //         // .style("left", "650px")
+                    //         // .style("top", "130px")
+                    //         .text(function(){
+                    //             // var num = cuisine.find(function(e) {
+                    //             // return e.cuisine == cuisineObj.cuisine
+                    //             // })
+                    //             //         .area.find(function(n) {
+                    //             //             return n.zip == d.properties.postalCode;
+                    //             //         });
+                    //             var num = cuisineAll.find(function(e) {
+                    //                 return e.zip == d.properties.postalCode;
+                    //             });
+                    //             // console.log(num);
+                    //             if (num != undefined) {
+                    //                 return num.number + " " + " restaurants in " + " | " + num.zip;
+                    //             }
+                    //             else if (num == undefined)
+                    //                 return "0 "+ " restaurant in "  + " | " + d.properties.postalCode;
+                    //     })
+                    // })
+                    // .on("mouseout", function(){
+                    //     d3.select("#zipPopOver")
+                    //             .style("opacity", 0)
+                    // })
+                
+            }
+            showTrees();
+            
+            rst = rst.filter(
+                d => d['ZIPCODE'] != 0 &&
+                    d['ZIPCODE'] <= zipMax
+            );
+            var cuisine = [];
+            const map = new Map();
+            
+            rst.forEach((d,i) => {
+                d['zip'] = Number(d['ZIPCODE']);
+            });
+
+            rst.forEach((d,i) => {
+                // d['zip'] = Number(d['ZIPCODE']);
+                var temp = d['CUISINE DESCRIPTION'];
+                
+                var location = zip.features.find(function(e) {
+                        // console.log(Number(e.properties.postalCode) == zipcode);
+                        // console.log(typeof(zipcode));
+                        
+                    return Number(e.properties.postalCode) == d['zip'];
+                });
+                if (!map.has(temp)) {
+                    map.set(temp, true);
+                    
+                    // console.log(location);
+                    if (location != undefined) {
+                        cuisine.push({
+                            cuisine: temp,
+                            
+                            area: [
+                                {
+                                    zip: Number(d['ZIPCODE']),
+                                    borough: location.properties['borough'],
+                                    po: location.properties['PO_NAME'],
+                                    number: 1
+                                }
+                            ]
+                        })
+                    }
+                    else {
+                        cuisine.push({
+                            cuisine: temp,
+                            // borough: location.properties['borough'],
+                            // po: location.properties['PO_NAME'],
+                            area: [
+                                {
+                                    zip: Number(d['ZIPCODE']),
+                                    number: 1
+                                }
+                            ]
+                        })
+                    }
+                    
+                    // cuisine.push(cui);
+                }
+                else if (map.has(temp)){
+                    
+                    var currCui = cuisine.find(function(e) {
+                        return e.cuisine == temp
+                    });
+                    // console.log(area.area);
+                    
+                    var find = currCui.area.find(function(data) {
+                        return data.zip == d['zip'];
+                    });
+                    if (find != undefined) {
+                        find.number++;
+                    }
+                    else if (find == undefined) {
+                        if (location != undefined) {
+                            currCui.area.push({
+                                zip: Number(d['ZIPCODE']),
+                                borough: location.properties['borough'],
+                                po: location.properties['PO_NAME'],
+                                number: 1
+                            })
+                        }
+                        else {
+                            currCui.area.push({
+                                zip: Number(d['ZIPCODE']),
+
+                                number: 1
+                            })
+                        }
+                        // currCui.area.push({
+                        //     zip: Number(d['ZIPCODE']),
+
+                        //     number: 1
+                        // })
+                    }
+                }
+
+            });
+            cuisine = cuisine.sort(compare);
+            console.log(cuisine);
+            
+            var cuisineAll = [];
+            const mapAll = new Map();
+            rst.forEach((d,i) => {
+                var temp = d['zip'];
+                if (!map.has(temp)) {
+                    map.set(temp, true);
+                    
+                    cuisineAll.push({
+                        zip: temp,
+                        number: 1
+                    })
+                    // cuisine.push(cui);
+                }
+                else if (map.has(temp)){
+                    cuisineAll.find(function(e) {
+                        return e.zip == temp
+                    }).number++;
+                }
+            });
+            console.log(cuisineAll);
+            var scale = d3.scaleSequential(d3.interpolateBlues).domain([0,262]);
+            var maxAll = d3.max(cuisineAll, d=> d['number']);
+            console.log(maxAll);
+            
+            // console.log(maxAmerican);
+            var scaleAll = d3.scaleSequential(d3.interpolateBlues).domain([1,maxAll]);
+
+            function showAll(){
+                drawLegend(maxAll, scaleAll);
+                tozoom.append("g")
+                    .attr("id","test")
+                    .selectAll("path")
+                    .data(zip.features)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .attr("id", function(d,i) {
+                        return "poly" + i;
+                    })
+                    .style("fill", function(d,i) {
+                        // console.log(d);
+                        var id = d.properties.OBJECTID;
+                        var num = cuisineAll.find(function(n) {
+                                    return n.zip == d.properties.postalCode;
+                                });
+                        // console.log(num);
+                        if (num != undefined) {
+                            return scaleAll(num.number);
+                        }
+                        else if (num == 0)
+                            return "grey"
+                        else if (num == undefined)
+                            return "grey";
+                        // return scale(i);
+                    })
+                    .attr("stroke-width", 0.5)
+                    .attr("stroke", "white")
+                    .on("mouseover", function(d,i) {
+                        d3.select("#zipPopOver")
+                            .transition()
+                            .style("opacity", 1)
+                            // .style("left", "650px")
+                            // .style("top", "130px")
+                            .text(function(){
+                                // var num = cuisine.find(function(e) {
+                                // return e.cuisine == cuisineObj.cuisine
+                                // })
+                                //         .area.find(function(n) {
+                                //             return n.zip == d.properties.postalCode;
+                                //         });
+                                var num = cuisineAll.find(function(e) {
+                                    return e.zip == d.properties.postalCode;
+                                });
+                                // console.log(num);
+                                if (num != undefined) {
+                                    return num.number + " " + " restaurants in " + " | " + num.zip;
+                                }
+                                else if (num == undefined)
+                                    return "0 "+ " restaurant in "  + " | " + d.properties.postalCode;
+                        })
+                    })
+                    .on("mouseout", function(){
+                        d3.select("#zipPopOver")
+                                .style("opacity", 0)
+                    })
+                
+            }
+            // console.log(cuisineAll);
+            
+            // showAll();
+            var listScale = d3.scaleSequential(d3.interpolateRainbow).domain([0,85]);
+            function showCuisine(cuisineObj, color) {
+                d3.selectAll("#routes").remove();
+                clickCount++;
+                console.log(cuisineObj);
+                var maxValue = d3.max(cuisineObj.area, d=> d['number']);
+                if (maxValue == 1) {
+                    var colorScale = d3.scaleLinear()
+                                        .domain([0, maxValue])
+                                        .range(["grey", color])
+                }
+                else {
+                    var colorScale = d3.scaleLinear()
+                            .domain([0, 1, maxValue])
+                            .range(["grey", "white", color])
+                }
+                // var colorScale = d3.scaleLinear()
+                //             .domain([0, 1, maxValue])
+                //             .range(["grey", "white", color])
+                            // .interpolate(d3.interpolateHcl);
+                console.log(colorScale(50));
+                
+                // console.log(typeof(cuisineType));
+                // console.log(cuisineType == "Afghan");
+                // cuisine.find()
+                
+                console.log(maxValue);
+                var scaleCuisine = d3.scaleSequential(d3.interpolateBlues).domain([0,maxValue]);
+                drawLegend(maxValue, colorScale)
+                tozoom.append("g")
+                    .attr("id","cuisine" + cuisineObj.cuisine)
+                    .selectAll("path")
+                    .data(zip.features)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .attr("id", function(d,i) {
+                        return "poly" + i;
+                    })
+                    .style("fill", function(d,i) {
+                        // console.log(d);
+                        var id = d.properties.OBJECTID;
+                        var num = cuisineObj.area.find(function(e) {
+                            return e.zip == d.properties.postalCode;
+                        })
+
+                        if (num != undefined) {
+                            return colorScale(num.number);
+                        }
+                        else if (num == undefined)
+                            return "grey";
+                        // return scale(i);
+                    })
+                    .on("mouseover", function(d,i) {
+                        d3.select("#zipPopOver")
+                        .transition()
+                        .style("opacity", 1)
+                        // .style("left", "650px")
+                        // .style("top", "130px")
+                        .text(function(){
+                            // var num = cuisine.find(function(e) {
+                            // return e.cuisine == cuisineObj.cuisine
+                            // })
+                            //         .area.find(function(n) {
+                            //             return n.zip == d.properties.postalCode;
+                            //         });
+                            var num = cuisineObj.area.find(function(e) {
+                                return e.zip == d.properties.postalCode;
+                            });
+                            // console.log(num);
+                            if (num != undefined) {
+                                return num.number + " " + cuisineObj.cuisine +" restaurants in " + num.po + " | " + num.zip;
+                            }
+                            else if (num == undefined)
+                                return "0 "+ cuisineObj.cuisine +" restaurant in "  + d.properties['PO_NAME'] + " | " + d.properties.postalCode;
+                        })
+                    })
+                    .on("mouseout", function(){
+                        d3.select("#zipPopOver")
+                            .style("opacity", 0)
+                            
+                    })
+            }
+            // cuisine = cuisine.sort();
+            function compare(a, b) {
+                // Use toUpperCase() to ignore character casing
+                const genreA = a.cuisine.toUpperCase();
+                const genreB = b.cuisine.toUpperCase();
+
+                let comparison = 0;
+                if (genreA > genreB) {
+                    comparison = 1;
+                } 
+                else if (genreA < genreB) {
+                    comparison = -1;
+                }
+                return comparison;
+            }
+
+            var cuisineSorted = cuisine.sort(compare);
+            d3.select("#cuisineList")
+                .append("li")
+                .attr("class", "cuisineType")
+                .attr("id", "cuisineAll")
+                .text("All")
+                .style("border-left", "5px solid " + listScale(0))
+                .on("click", function() {
+                    console.log(this);
+                    // console.log(typeof(listScale(i)));
+                    
+                    showAll();
+                    // console.log(this.style);
+                    d3.selectAll(".cuisineType")
+                        .style("background-color", "rgba(100, 116, 128, 0.2)")
+                    d3.select(this)
+                        .attr("selected", true)
+                        .style("background-color", listScale(0))
+                    console.log(this);
+                    
+                    
+                    
+                })
+                .on("mouseover", function() {
+                    console.log(d3.select(this));
+                    // console.log(d3.select(this).attr("selected"));
+                    d3.select(this)
+                        .style("background-color", "rgba(100, 116, 128, 0.5)")
+                })
+                .on("mouseout", function() {
+                    console.log(d3.select(this).attr("selected"));
+                    
+                    if (d3.select(this).attr("selected") == false) {
+                        d3.select(this)
+                        .style("background-color", "rgba(100, 116, 128, 0.2)")
+                    }
+                    // d3.select(this)
+                    //     .style("background-color", "rgba(100, 116, 128, 0.2)")
+                })
+            cuisineSorted.forEach( (d,i) => {
+                d3.select("#cuisineList")
+                    .append("li")
+                    .attr("class", "cuisineType")
+                    .attr("selected", false)
+                    .attr("id", "cuisine" + i)
+                    .text(d.cuisine)
+                    .style("border-left", "5px solid " + listScale(i))
+                    .on("click", function() {
+                        // console.log(this);
+                        // console.log(typeof(listScale(i)));
+                        
+                        showCuisine(d, listScale(i));
+                        // console.log(this.style);
+                        d3.selectAll(".cuisineType")
+                            .style("background-color", "rgba(100, 116, 128, 0.2)")
+                        d3.select(this)
+                            .attr("selected", true)
+                            .style("background-color", listScale(i))
+                        console.log(d3.select(this).attr("selected"));
+                        
+                        
+                        
+                    })
+                    .on("mouseover", function() {
+                        console.log(d3.select(this));
+                        console.log(d3.select(this).attr("selected"));
+                        
+                        if (d3.select(this).attr("selected") == false) {
+                            d3.select(this)
+                                .style("background-color", "rgba(100, 116, 128, 0.5)")
+                                // .style("color", "black")
+                        }
+                        // d3.select(this)
+                        //     .style("background-color", "rgba(100, 116, 128, 0.5)")
+                    })
+                    .on("mouseout", function() {
+                        // console.log(d3.select(this));
+                    
+                        if (d3.select(this).attr("selected") == false) {
+                            d3.select(this)
+                            .style("background-color", "rgba(100, 116, 128, 0.2)")
+                        }
+                    })
+
+            })
+
+            function drawLegend(max, scaleLegend) {
+                // Bonus code here to draw an adaptive gradient legend so we can see different color scales for choropleth maps
+                //  Credit Prof. Rz if you are basing a legend on this structure, and note performance issues
+                
+                const legend = d3.select("#legend");
+                const legendWidth = legend.attr("width");
+                const legendHeight = legend.attr("height");
+                const barHeight = 40;
+                const stepSize = (legendWidth-40)/(max); // warning, not using a canvas element so lots of rect tags will be created for low stepSize, causing issues with performance
+                // Use minMax from step 3c, but extend range by 1 in either direction to expose more features
+                const pixelScale = d3.scaleLinear().domain([0,legendWidth-40]).range([1,max]); // In this case the "data" are pixels, and we get numbers to use in colorScale
+                const barScale = d3.scaleLinear().domain([1,max]).range([0,legendWidth-40]);
+                var tick = 5;
+                if (max < 5)
+                    tick = max;
+                const barAxis = d3.axisBottom(barScale).ticks(tick,"s");
+                d3.selectAll("#ticks").remove();
+                d3.selectAll("#bar").remove();
+                legend.append("g")
+                    .attr("class", "colorbar axis")
+                    .attr("id", "ticks")
+                    .attr("transform","translate("+(20)+","+(barHeight+5)+")")
+                    .call(barAxis);
+                // d3.selectAll(".domain").attr("opacity", 0);
+                // Draw rects of color down the bar
+                let bar = legend.append("g").attr("transform","translate("+(20)+","+(0)+")").attr("id", "bar");
+                for (let i=0; i<legendWidth-40; i=i+stepSize) {
+                    bar.append("rect")
+                        .attr("x", i)
+                        .attr("y", 0)
+                        .attr("width", stepSize)
+                        .attr("height",barHeight)
+                        .style("fill", scaleLegend( pixelScale(i) )); // pixels => countData => color
+                }
+                // Put lines in to mark actual min and max of our data
+                // bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(1)).attr("x2", barScale(1)).attr("y1", 0).attr("y1", barHeight+4);
+                // bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(max)).attr("x2", barScale(max)).attr("y1", 0).attr("y1", barHeight+4);
+
+            }
+            
+            // var arr = [];
+            // const zipMap = new Map();
+            // rst.forEach((d,i) => {
+            //     var zipcode = d['zip'];
+            //     // console.log(zipcode);
+                
+            //     if (!map.has(zipcode)) {
+            //         map.set(zipcode, true);
+            //         var zipID = zip.features.find(function(e) {
+            //             // console.log(Number(e.properties.postalCode) == zipcode);
+            //             // console.log(typeof(zipcode));
+                        
+            //             return Number(e.properties.postalCode) == zipcode;
+            //         });
+            //         if (zipID != undefined) {
+            //             arr.push({
+            //                 zipcode: zipcode,
+            //                 zipID: zipID.properties['OBJECTID'],
+            //                 borough: zipID.properties['borough'],
+            //                 restaurants: []
+            //             })
+            //         }
+            //         else if (zipID == undefined) {
+            //             // console.log(d);
+                        
+            //         }
+
+            //     }
+            // });
+            // console.log(arr);
+            // console.log(zip.features.find(function(e) {
+            //             return e.properties.postalCode == 11217
+            //         }).properties['OBJECTID']);
+            
+            
+            // console.log(rst.length);
+            // {
+            //     "id": 5,
+            //     "name": "Richmond Hill",
+            //     "cuisine": [
+            //         "American": [
+            //             {}
+            //         ],
+            //         "Asian": 
+            //     ]
+            // }
+            
+            // subway line colors:http://web.mta.info/developers/resources/line_colors.htm
+            var sublinecolor=[{"name":"A-C-E","color":"#0039A6"},
+                                {"name":"B-D-F-M","color":"#FF6319"},
+                                {"name":"G","color":"#6CBE45"},
+                                {"name":"J-Z","color":"#996633"},
+                                {"name":"N-Q-R","color":"#FCCC0A"},
+                                {"name":"S","color":"#808183"},
+                                {"name":"1-2-3","color":"#EE352E"},
+                                {"name":"4-5-6","color":"#00933C"},
+                                {"name":"7","color":"#B933AD"}
+                                ];
+            // var clickCount = 0;
+            //create subway show/hide option button
+            d3.select("#subwayOption")
+                .on("click",function(){
+                    // Determine if current line is visible
+                    clickCount++;
+                    if(clickCount%2 != 0) {subway(routesData,stopsData)}
+                    else{
+                        d3.select("#routes").remove();
+                        d3.select("#stops").remove();
+                    }
+                });
+                    
+                    
+            function subway(routesD,stopsD){
+                // draw subway lines
+                tozoom.append("g")
+                    .attr("id","routes")
+                    .selectAll(".brgh")
+                    .data(routesD.features)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .style("stroke",function(d){
+                        // show line color based on sublinecolor
+                        for (i = 0; i < 9; i++){
+                            if (sublinecolor[i].name.includes(d.properties.rt_symbol)  ){
+                                return sublinecolor[i].color
+                            };
+                        };
+                    })
+                    .style("opacity", 0.7)
+                
+                // draw stops
+                tozoom.append("g")
+                    .attr("id","stops")
+                    .selectAll(".stop")
+                    .data(stopsD)
+                    .enter().append("circle")
+                    .attr("r", 3)
+                    .attr("cx", function(d) {return projection([d.STOP_LON,d.STOP_LAT])[0]})
+                    .attr("cy", function(d) {return projection([d.STOP_LON,d.STOP_LAT])[1]})
+                    // show stop info when haver
+                    .on("mouseover", function(d) {
+                        d3.select(this)
+                        .transition().duration(200)
+                        .attr("r",6);
+                        // show selected stop and subway line info
+                        d3.select("#stationPopover")
+                        .transition()
+                        .style("opacity", 1)
+                        .style("left", (d3.event.pageX)+8+ "px")
+                        .style("top", (d3.event.pageY) +10+ "px")
+                        .text(d.STOP_NAME.toLowerCase() + "     |     LINE "+d.Routes_ALL)
+                        // .style("font-weight","bold")
+                    })
+                    .on("mouseout", function(d) { 
+                        d3.select(this)
+                        .transition().duration(200)
+                        .attr("r",3);
+                        d3.select("#stationPopover")
+                        .transition()
+                        .style("opacity",0);
+                    });
+
+            
+            };
+        
+        // zoom---------------------------------------------------
+        var zoom = d3.zoom()
+                .scaleExtent([1,10])
+                .on("zoom", zoomed);
+
+        svga.call(zoom);
+        svga.call(zoom.transform, d3.zoomIdentity);
+
+        function zoomed() {
+        let transform = d3.event.transform;
+        tozoom.attr("transform", transform.toString() );
+        tozoom.select(".state-outline")
+                    .style("stroke-width", 4 / transform.k);
+        tozoom.select(".county-outline")
+                    .style("stroke-width", 1 / transform.k);
+
+        tozoom.select(".county-outline")
+                    .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+        tozoom.selectAll(".county")
+                    .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+
+        };    
+            
+        };
+        requestData();
+        
+        </script>
+    </body>
+</html>
