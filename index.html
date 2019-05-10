@@ -1,547 +1,682 @@
 <html>
-    <head>
-        <title>project2</title>
-        <meta charset="UTF-8">
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-        <script src="https://d3js.org/topojson.v2.min.js"></script>
-        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-        <style>
-        body {
-            background-color: #F8F8F8;
-            font-family: Montserrat, Helvetica, sans-serif;
-        }
-        #title {
-            background-color: #333; /* Black background color */
-            position: fixed; /* Make it stick/fixed */
-            top: 0; /* Stay on top */
-            width: 100%; /* Full width */
-            transition: top 0.3s; /* Transition effect when sliding down (and up) */
-            padding-top: 10px;
-            padding-bottom: 10px;
-            color: #F8F8F8;
-            font-weight: bold;
-            font-size: 35px;
-            font-family: Montserrat;
-            text-align: center;
-            /* margin-right: auto; */
-            /* border-bottom:  */
-        }
-        #container {
-            margin-top: 80px;
-            display: flex;
-        }
-        #nycmap {
-            display: inline-block;
-        }
 
-        #map {
-            /* stroke: #fff; */
-            /* stroke-width: .5; */
-            /* stroke-dasharray: 1; */
-            fill:grey;
-        }
-        
-        #stationPopover { 
-            position: absolute;     
-            text-align: center;         
-            padding: 10px;       
-            font-size: 15px;
-            font-family: Montserrat;
-            background-color: #fff; 
-            border-width: 2px; 
-            border-style: solid;
-            border-color: red;
-            border-radius: 7px;     
-            pointer-events: none;
-            opacity: 0;     
-        }
-        #zipPopOver {
-            position: fixed;
-            text-align: center;         
-            padding: 10px;       
-            font-size: 15px;
-            font-family: Montserrat;
-            background-color: rgba(73, 92, 107, 0.8);
-            border-radius: 5px;
-            pointer-events: none;
-            opacity: 0;
-            color: white;
-            width: 200px;
-            left: 650px;
-            top: 120px;
-        }
-        /* .zipPopOver {
+<head>
+  <title>project3</title>
+  <meta charset="UTF-8">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <style>
+    body {
+      background-color: #F8F8F8;
+      font-family: Montserrat, Helvetica, sans-serif;
+    }
+
+    #title {
+      background-color: #333;
+      /* Black background color */
+      position: fixed;
+      /* Make it stick/fixed */
+      top: 0;
+      /* Stay on top */
+      width: 100%;
+      /* Full width */
+      transition: top 0.3s;
+      /* Transition effect when sliding down (and up) */
+      padding-top: 10px;
+      padding-bottom: 10px;
+      color: #F8F8F8;
+      font-weight: bold;
+      font-size: 35px;
+      font-family: Montserrat;
+      text-align: center;
+      /* margin-right: auto; */
+      /* border-bottom:  */
+    }
+
+    #container {
+      margin-top: 80px;
+      display: flex;
+    }
+
+    #nycmap {
+      display: inline-block;
+    }
+
+    #map {
+      /* stroke: #fff; */
+      /* stroke-width: .5; */
+      /* stroke-dasharray: 1; */
+      fill: grey;
+    }
+
+    #stationPopover {
+      position: absolute;
+      text-align: center;
+      padding: 10px;
+      font-size: 15px;
+      font-family: Montserrat;
+      background-color: #fff;
+      border-width: 2px;
+      border-style: solid;
+      border-color: red;
+      border-radius: 7px;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    #zipPopOver {
+      position: fixed;
+      text-align: center;
+      padding: 10px;
+      font-size: 15px;
+      font-family: Montserrat;
+      background-color: rgba(73, 92, 107, 0.8);
+      border-radius: 5px;
+      pointer-events: none;
+      opacity: 0;
+      color: white;
+      width: 200px;
+      left: 650px;
+      top: 120px;
+    }
+
+    /* .zipPopOver {
 
         } */
-        #stops{
-            z-index:150;
-            fill:white;
-            stroke: #888;
-        }
-        #routes{
-            stroke: #888;
-            stroke-width:3;
-            fill:none;
-            z-index:1000;
-        }
-        #menu {
-            display: inline-block;
-        }
-        #subwayOption {
-            /* position: relative;
+    #stops {
+      z-index: 150;
+      fill: white;
+      stroke: #888;
+    }
+
+    #routes {
+      stroke: #888;
+      stroke-width: 3;
+      fill: none;
+      z-index: 1000;
+    }
+
+    #menu {
+      display: inline-block;
+    }
+
+    #subwayOption {
+      /* position: relative;
             top:100px;
             left:1000px; */
-            /* display: inline-block; */
-            width: 294px;
-            display: inline-block;
-            
-            background-color:  rgba(100, 116, 128, 0.2);
-            
-            border: none;
-            color: white;
-            padding: 10px 28px;
-            text-align: center;
-            text-decoration: none;
-            font-family: Helvetica;
-            display: inline-block;
-            font-size: 15px;
-            font-family: Montserrat;
+      /* display: inline-block; */
+      width: 294px;
+      display: inline-block;
+
+      background-color: rgba(100, 116, 128, 0.2);
+
+      border: none;
+      color: white;
+      padding: 10px 28px;
+      text-align: center;
+      text-decoration: none;
+      font-family: Helvetica;
+      display: inline-block;
+      font-size: 15px;
+      font-family: Montserrat;
+    }
+
+    #cuisineList {
+      /* padding-top: 200px; */
+      width: 294px;
+      display: inline-block;
+      height: 800px;
+      overflow-y: scroll;
+      list-style-type: none;
+      padding-left: 0;
+      /* color:aliceblue; */
+      font-family: Montserrat;
+      line-height: 30px;
+      /* background-color: rgba(100, 116, 128, 0.2); */
+      /* color: aliceblue; */
+    }
+
+    #cuisineList li {
+      color: #F8F8F8;
+      background-color: rgba(100, 116, 128, 0.2);
+      /* background-color: rgba(30, 215, 96, 0.1); */
+      padding-top: 5px;
+      padding-left: 10px;
+      margin-bottom: 2px;
+    }
+
+    #legend {
+      position: fixed;
+      top: 120px;
+      font-family: Montserrat;
+      color: white;
+
+    }
+  </style>
+</head>
+
+<body>
+  <!-- <div id="container"></div> -->
+  <!-- <div id="title"> Distribution of 85 Cuisine Types of Restaurants in NYC</div> -->
+
+  <p id="projectTitle">
+    <center>
+      <h1>
+        <font color="black" size="6">Tree Census in New York City</font>
+      </h1>
+    </center>
+    <div style="margin-left:10px; line-height:13px;">
+      <center>
+        <font color="black" size="3"><br>Our dataset contains information of
+          nearly every tree in New York City in 2015. You are going to explore
+          the distribution and some fun facts of the trees. <br></font>
+      </center>
+    </div>
+    <center>
+      <h2>
+        <font color="black" size="4">
+          <br><br><br><br><b>Where are the trees located in New York City? </b></font>
+      </h2>
+      <font color="black" size="2">
+        The following treemap shows how many trees are
+        planted in each neighborhood. Each branch of the treemap is
+        given a rectangle standing for a borough, <br>which is then tiled with
+        smaller rectangles representing neighborhoods. A leaf node's
+        rectangle has an area proportional to the number of trees,
+        <br>and the leaf nodes are colored to show different neighborhoods. <br><br>
+      </font>
+    </center>
+  </p>
+
+  <p id="treemap">
+    <center><svg id="treemap" width="800" height="800"></svg></center>
+  </p>
+  <p id="treeType">
+    <center>
+      <h2>
+        <font color="black" size="4">
+          <br><br><br><br><b>What types of trees are the most popular? </b></font>
+      </h2>
+      <font color="black" size="2">
+        The following treemap shows the ranking of different types of trees in
+        New York City. Each branch of the treemap is given a rectangle standing
+        for a tree type. <br> A leaf node's
+        rectangle has an area proportional to the number of trees,
+        and the leaf nodes are colored to show different tree types. <br><br><br>
+      </font>
+    </center>
+    <center><svg id="treeType" width="800" height="800"></svg></center>
+  </p>
+  <p id="nycmap">
+    <center>
+      <h2>
+        <font color="black" size="4">
+          <br><br><br><br><b> Tree Census Visualization </b></font>
+      </h2>
+      <font color="black" size="2">
+        The following map shows the distribution of trees in
+        New York City. <br><br><br>
+      </font>
+    </center>
+    <center>
+      <div id="container">
+        <svg id="nycmap" width="900" height="1000"></svg>
+      </div>
+    </center>
+  </p>
+  <p id="funFacts">
+    <center>
+      <h2>
+        <font color="black" size="4">
+          <br><br><br><br><b>Fun Facts </b></font>
+      </h2>
+      <font color="black" size="2">
+        <li>The top leafiest block in each borough are: Bronx, Brooklyn, Queens, Staten Island</li>
+        <li>There are 666,134 street trees on 131,488 blocks in New York City in 2015</li> <br><br><br>
+      </font>
+    </center>
+  </p>
+
+
+  <script>
+    var sWidth = 1000,
+      sHeight = 1000;
+    // const svga = d3.select("#container")
+    //                 .append("svg")
+    //                 .attr("id","nycmap")
+    //                 .style("width", sWidth + "px")
+    //                 .style("height", sHeight + "px");
+    const svga = d3.select("svg#nycmap");
+    const svgid1 = "nycmap";
+    const margin = {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 20
+    };
+    const mapWidth = sWidth - margin.left - margin.right;
+    const mapHeight = sHeight - margin.top - margin.bottom;
+    let tozoom = svga.append("g");
+    // resources
+    var nycsource = "nycmap.geojson";
+    const requestData = async () => {
+
+      const nycd = await d3.json(nycsource);
+
+
+      var projection = d3.geoConicConformal()
+        .parallels([33, 45])
+        .rotate([96, -39])
+        .fitSize([sWidth, sHeight], nycd);
+
+      var path = d3.geoPath()
+        .projection(projection);
+      tozoom.append("g")
+        .attr("id", "map")
+        .selectAll("path")
+        .data(nycd.features)
+        .enter().append("path")
+        .attr("d", path);
+
+
+      const zip = await d3.json("./nyczip.geojson");
+
+      const tree = await d3.csv("./2015_tree_no_ltlg.csv");
+      // console.log(zip.features);
+      // console.log(zip.features['properties']['postalCode']);
+
+      const zipMax = d3.max(zip.features, d => d['properties']['postalCode']);
+      const zipMin = d3.min(zip.features, d => d['properties']['postalCode'])
+      console.log(zipMax);
+      console.log(zipMin);
+      // console.log(tree);
+
+      const zipTreeMax = d3.max(tree, d => Number(d['postcode']));
+      const zipTreeMin = d3.min(tree, d => Number(d['postcode']));
+      const treeMinMax = d3.extent(tree, d => Number(d['postcode']));
+      console.log(zipTreeMax);
+      console.log(zipTreeMin);
+      console.log(treeMinMax);
+
+      var treeArray = [];
+      const treeMap = new Map();
+      tree.forEach((d, i) => {
+        var postcode = d['postcode'];
+        if (!treeMap.has(postcode)) {
+          treeMap.set(postcode, true);
+
+          treeArray.push({
+            postcode: postcode,
+            borough: d['borough'],
+            number: 1
+          })
+          // cuisine.push(cui);
+        } else if (treeMap.has(postcode)) {
+          treeArray.find(function(e) {
+            return e.postcode == postcode;
+          }).number++;
         }
-        #cuisineList {
-            /* padding-top: 200px; */
-            width: 294px;
-            display: inline-block;
-            height: 800px;
-            overflow-y: scroll;
-            list-style-type: none;
-            padding-left: 0;
-            /* color:aliceblue; */
-            font-family: Montserrat;
-            line-height: 30px;
-            /* background-color: rgba(100, 116, 128, 0.2); */
-            /* color: aliceblue; */
+      });
+      // console.log(treeArray);
+
+
+      // nest it
+      // var entries = d3.nest()
+      //                 // .key(function(d) { return d['state']; })
+      //                 .key(function(d) { return d['borough']; })
+      //                 .key(function(d) { return d['nta_name']; })
+      //                 .rollup(function(leaves) { return leaves.length; })
+      //                 .entries(tree);
+      var entries = {
+        "key": "nyc",
+        "values": d3.nest()
+          // .key(function(d) { return d['state']; })
+          .key(function(d) {
+            return d['borough'];
+          })
+          .key(function(d) {
+            return d['nta_name'];
+          })
+          .rollup(function(leaves) {
+            return leaves.length;
+          })
+          .entries(tree)
+      }
+      var treeData = {
+        "name": "nyc",
+        "children": entries.values.map(function(borough) {
+
+          return {
+            "name": borough.key,
+            "children": borough.values.map(function(nta) {
+
+              return {
+                "name": nta.key,
+                "value": nta.value
+              };
+
+            }) //end of map(function(region){
+          };
+
+        }) //end of map(function(major){
+      }; //end of var declaration
+      // var data = {"key": "nyc", "values": entries};
+      // console.log(data);
+      var type = {
+        "key": "nyc",
+        "values": d3.nest()
+          // .key(function(d) { return d['state']; })
+          .key(function(d) {
+            return d['spc_common'];
+          })
+          .rollup(function(leaves) {
+            return leaves.length;
+          })
+          .entries(tree)
+      }
+      console.log(type);
+
+      var typeTree = {
+        "name": "nyc",
+        "children": type.values.map(function(spc) {
+          return {
+            "name": spc.key,
+            "value": spc.value
+          };
+        })
+      };
+      console.log(typeTree);
+
+      var typeRoot = d3.hierarchy(typeTree).sum(d => d.value);
+      console.log(typeRoot.leaves());
+
+      var test = await d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_dendrogram_full.json");
+      var root = d3.hierarchy(treeData)
+        .sum(function(d) {
+          // console.log(d);
+
+          return d.value;
+        })
+      // .sort((a, b) => b.values - a.values)
+      var root2 = d3.hierarchy(test)
+        .sum(function(d) {
+          return d.value
+        });
+      const ntaMinMax = d3.extent(root.leaves(), d => Number(d['value']));
+      const typeMinMax = d3.extent(typeRoot.leaves(), d => Number(d['value']));
+
+      var ntaColorScale = d3.scaleSequential(d3.interpolateGreens).domain([ntaMinMax[0], ntaMinMax[1] / 2]);
+      var typeColorScale = d3.scaleSequential(d3.interpolateYlGn).domain([typeMinMax[0], typeMinMax[1] / 2]);
+      var svg = d3.select("svg#treemap");
+      var svg2 = d3.select("svg#treeType");
+      d3.treemap()
+        .size([800, 800])
+        .padding(2)
+        (root)
+      d3.select("svg#treemap").selectAll("rect")
+        .data(root.leaves())
+        .enter()
+        .append("rect")
+        .attr('x', function(d) {
+          return d.x0;
+        })
+        .attr('y', function(d) {
+          return d.y0;
+        })
+        .attr('width', function(d) {
+          return d.x1 - d.x0;
+        })
+        .attr('height', function(d) {
+          return d.y1 - d.y0;
+        })
+        .style("stroke", "black")
+        .style("fill", function(d) {
+          return ntaColorScale(d.value)
+        })
+
+      svg.selectAll("text")
+        .data(root.leaves())
+        .enter()
+        .append("text")
+        .attr("x", function(d) {
+          return d.x0 + 5
+        }) // +10 to adjust position (more right)
+        .attr("y", function(d) {
+          return d.y0 + 10
+        }) // +20 to adjust position (lower)
+        .text(function(d) {
+          return d.data.name + " \br " + d.value
+        })
+        .attr("font-size", "10px")
+        .attr("fill", function(d) {
+
+          if (d.value < (2000))
+            return "none";
+          else
+            return "#F8F8F8";
+        })
+
+      // tree types map
+      d3.treemap()
+        .size([800, 800])
+        .padding(2)
+        (typeRoot)
+      svg2.selectAll("rect")
+        .data(typeRoot.leaves())
+        .enter()
+        .append("rect")
+        .attr('x', function(d) {
+          return d.x0;
+        })
+        .attr('y', function(d) {
+          return d.y0;
+        })
+        .attr('width', function(d) {
+          return d.x1 - d.x0;
+        })
+        .attr('height', function(d) {
+          return d.y1 - d.y0;
+        })
+        .style("stroke", "black")
+        .style("fill", function(d) {
+          return typeColorScale(d.value)
+        })
+
+      svg2.selectAll("text")
+        .data(typeRoot.leaves())
+        .enter()
+        .append("text")
+        .attr("x", function(d) {
+          return d.x0 + 5
+        }) // +10 to adjust position (more right)
+        .attr("y", function(d) {
+          return d.y0 + 20
+        }) // +20 to adjust position (lower)
+        .text(function(d) {
+          return d.data.name + " \br " + d.value
+        })
+        .attr("font-size", "12px")
+        .attr("fill", function(d) {
+
+          if (d.value < (typeMinMax[1] / 2)) {
+            if (d.value < 100)
+              return "none";
+            else
+              return "black";
+          } else
+            return "#F8F8F8";
+        })
+
+
+
+
+      const treeNumMinMax = d3.extent(treeArray, d => d['number']);
+      const ManhattanMinMax = d3.extent(treeArray, function(d) {
+        if (d['borough'] == "Manhattan") {
+          return d['number'];
         }
-        #cuisineList li {
-            color: #F8F8F8;
-            background-color: rgba(100, 116, 128, 0.2);
-            /* background-color: rgba(30, 215, 96, 0.1); */
-            padding-top: 5px;
-            padding-left: 10px;
-            margin-bottom: 2px;
-        }
-        #legend {
-            position: fixed;
-            top:120px;
-            font-family: Montserrat;
-            color: white;
+      })
+      console.log(treeNumMinMax);
+      console.log(ManhattanMinMax);
 
-        }
-            
-        </style>
-    </head>
-    <body>
-        <!-- <div id="container"></div> -->
-        <!-- <div id="title"> Distribution of 85 Cuisine Types of Restaurants in NYC</div> -->
-        <svg id="treemap" width="800" height="800"></svg>
-        <svg id="treeType" width="800" height="800"></svg>
-        <div id="container">
-            <svg id="nycmap" width="900" height="1000"></svg>
-        </div>
-        
+      var treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, treeNumMinMax[1] / 5]);
+      console.log(treeArray.find(function(n) {
+        return n.postcode == 83;
+      }));
 
-        <script>
-
-        var sWidth = 1000, sHeight = 1000;
-        // const svga = d3.select("#container")
-        //                 .append("svg")
-        //                 .attr("id","nycmap")
-        //                 .style("width", sWidth + "px")
-        //                 .style("height", sHeight + "px");
-        const svga = d3.select("svg#nycmap");
-        const svgid1 = "nycmap";
-        const margin = { top: 20, right: 20, bottom: 20, left:20};
-        const mapWidth = sWidth - margin.left - margin.right;
-        const mapHeight = sHeight - margin.top - margin.bottom;
-        let tozoom = svga.append("g");
-        // resources
-        var nycsource= "nycmap.geojson";
-        const requestData = async() => {
-            
-            const nycd = await d3.json(nycsource);
-            
-            
-            var projection = d3.geoConicConformal()
-                            .parallels([33, 45])
-                            .rotate([96, -39])
-                            .fitSize([sWidth, sHeight], nycd);
-            
-            var path = d3.geoPath()
-                        .projection(projection);
-            tozoom.append("g")
-                .attr("id","map")
-                .selectAll("path")
-                .data(nycd.features)
-                .enter().append("path")
-                .attr("d", path);
-
-            
-            const zip = await d3.json("./nyczip.geojson");
-
-            const tree = await d3.csv("./2015_tree_no_ltlg.csv");
-            // console.log(zip.features);
-            // console.log(zip.features['properties']['postalCode']);
-            
-            const zipMax = d3.max(zip.features, d=> d['properties']['postalCode']);
-            const zipMin = d3.min(zip.features, d=> d['properties']['postalCode'])
-            console.log(zipMax);
-            console.log(zipMin);
-            // console.log(tree);
-            
-            const zipTreeMax = d3.max(tree, d=> Number(d['postcode']));
-            const zipTreeMin = d3.min(tree, d=> Number(d['postcode']));
-            const treeMinMax = d3.extent(tree, d=> Number(d['postcode']));
-            console.log(zipTreeMax);
-            console.log(zipTreeMin);
-            console.log(treeMinMax);
-            
-            var treeArray = [];
-            const treeMap = new Map();
-            tree.forEach((d,i) => {
-                var postcode = d['postcode'];
-                if (!treeMap.has(postcode)) {
-                    treeMap.set(postcode, true);
-                    
-                    treeArray.push({
-                        postcode: postcode,
-                        borough: d['borough'],
-                        number: 1
-                    })
-                    // cuisine.push(cui);
-                }
-                else if (treeMap.has(postcode)){
-                    treeArray.find(function(e) {
-                        return e.postcode == postcode;
-                    }).number++;
-                }
+      function showTrees() {
+        // drawLegend(maxAll, scaleAll);
+        tozoom.append("g")
+          .attr("id", "nyctreemap")
+          .selectAll("path")
+          .data(zip.features)
+          .enter().append("path")
+          .attr("d", path)
+          .attr("id", function(d, i) {
+            return "poly" + i;
+          })
+          .style("fill", function(d, i) {
+            // console.log(d);
+            // var id = d.properties.OBJECTID;
+            var num = treeArray.find(function(n) {
+              return n.postcode == Number(d.properties.postalCode);
             });
-            // console.log(treeArray);
+            // console.log(num);
+            if (num != undefined) {
+              return treeColorScale(num.number);
+            } else if (num == 0)
+              return "grey"
+            else if (num == undefined)
+              return "grey";
+            // return scale(i);
+          })
+          .attr("stroke-width", 0.5)
+          .attr("stroke", "white")
+        // .on("mouseover", function(d,i) {
+        //     d3.select("#zipPopOver")
+        //         .transition()
+        //         .style("opacity", 1)
+        //         // .style("left", "650px")
+        //         // .style("top", "130px")
+        //         .text(function(){
+        //             // var num = cuisine.find(function(e) {
+        //             // return e.cuisine == cuisineObj.cuisine
+        //             // })
+        //             //         .area.find(function(n) {
+        //             //             return n.zip == d.properties.postalCode;
+        //             //         });
+        //             var num = cuisineAll.find(function(e) {
+        //                 return e.zip == d.properties.postalCode;
+        //             });
+        //             // console.log(num);
+        //             if (num != undefined) {
+        //                 return num.number + " " + " restaurants in " + " | " + num.zip;
+        //             }
+        //             else if (num == undefined)
+        //                 return "0 "+ " restaurant in "  + " | " + d.properties.postalCode;
+        //     })
+        // })
+        // .on("mouseout", function(){
+        //     d3.select("#zipPopOver")
+        //             .style("opacity", 0)
+        // })
 
-
-            // nest it 
-            // var entries = d3.nest()
-            //                 // .key(function(d) { return d['state']; })
-            //                 .key(function(d) { return d['borough']; })
-            //                 .key(function(d) { return d['nta_name']; })
-            //                 .rollup(function(leaves) { return leaves.length; })
-            //                 .entries(tree);
-            var entries = {
-                "key": "nyc",
-                "values": d3.nest()
-                            // .key(function(d) { return d['state']; })
-                            .key(function(d) { return d['borough']; })
-                            .key(function(d) { return d['nta_name']; })
-                            .rollup(function(leaves) { return leaves.length; })
-                            .entries(tree)
-            }
-            var treeData = {
-                "name": "nyc",
-                "children": entries.values.map(function(borough) {
-
-                    return {
-                        "name": borough.key,
-                        "children": borough.values.map(function(nta) {
-
-                            return {
-                                "name": nta.key,
-                                "value": nta.value
-                            };
-
-                        }) //end of map(function(region){
-                    };
-
-                }) //end of map(function(major){
-            }; //end of var declaration
-            // var data = {"key": "nyc", "values": entries};
-            // console.log(data);
-            var type = {
-                "key": "nyc",
-                "values": d3.nest()
-                            // .key(function(d) { return d['state']; })
-                            .key(function(d) { return d['spc_common']; })
-                            .rollup(function(leaves) { return leaves.length; })
-                            .entries(tree)
-            }
-            console.log(type);
-            
-            var typeTree = {
-                "name": "nyc",
-                "children": type.values.map(function(spc) {
-                    return {
-                        "name": spc.key,
-                        "value": spc.value
-                    };
-                })
-            };
-            console.log(typeTree);
-            
-            var typeRoot = d3.hierarchy(typeTree).sum( d=> d.value);
-            console.log(typeRoot.leaves());
-            
-            var test = await d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_dendrogram_full.json");           
-            var root = d3.hierarchy(treeData)
-                        .sum(function(d) { 
-                            // console.log(d);
-                            
-                            return d.value; })
-                        // .sort((a, b) => b.values - a.values)
-            var root2 = d3.hierarchy(test)
-                            .sum(function(d){return d.value});
-            const ntaMinMax = d3.extent(root.leaves(), d=> Number(d['value']));
-            const typeMinMax = d3.extent(typeRoot.leaves(), d=> Number(d['value']));
-            
-            var ntaColorScale = d3.scaleSequential(d3.interpolateGreens).domain([ntaMinMax[0], ntaMinMax[1]/2]);
-            var typeColorScale = d3.scaleSequential(d3.interpolateYlGn).domain([typeMinMax[0], typeMinMax[1]/2]);
-            var svg = d3.select("svg#treemap");
-            var svg2 = d3.select("svg#treeType");
-            d3.treemap()
-                .size([800, 800])
-                .padding(2)
-                (root)
-            d3.select("svg#treemap").selectAll("rect")
-                .data(root.leaves())
-                .enter()
-                .append("rect")
-                .attr('x', function (d) { return d.x0; })
-                .attr('y', function (d) { return d.y0; })
-                .attr('width', function (d) { return d.x1 - d.x0; })
-                .attr('height', function (d) { return d.y1 - d.y0; })
-                .style("stroke", "black")
-                .style("fill", function(d) { return ntaColorScale(d.value)})
-
-            svg.selectAll("text")
-                .data(root.leaves())
-                .enter()
-                .append("text")
-                .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
-                .attr("y", function(d){ return d.y0+10})    // +20 to adjust position (lower)
-                .text(function(d){ return d.data.name + " \br " + d.value})
-                .attr("font-size", "10px")
-                .attr("fill", function(d) {
-
-                    if (d.value < (2000))
-                        return "none";
-                    else
-                        return "#F8F8F8";
-                })
-            
-            // tree types map
-            d3.treemap()
-                .size([800, 800])
-                .padding(2)
-                (typeRoot)
-            svg2.selectAll("rect")
-                .data(typeRoot.leaves())
-                .enter()
-                .append("rect")
-                .attr('x', function (d) { return d.x0; })
-                .attr('y', function (d) { return d.y0; })
-                .attr('width', function (d) { return d.x1 - d.x0; })
-                .attr('height', function (d) { return d.y1 - d.y0; })
-                .style("stroke", "black")
-                .style("fill", function(d) { return typeColorScale(d.value)})
-
-            svg2.selectAll("text")
-                .data(typeRoot.leaves())
-                .enter()
-                .append("text")
-                .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
-                .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
-                .text(function(d){ return d.data.name + " \br " + d.value})
-                .attr("font-size", "12px")
-                .attr("fill", function(d) {
-
-                    if (d.value < (typeMinMax[1]/2)) {
-                        if (d.value < 100)
-                            return "none";
-                        else
-                            return "black";
-                    }
-                        
-                    else
-                        return "#F8F8F8";
-                })
+      }
+      showTrees();
 
 
 
 
-            const treeNumMinMax = d3.extent(treeArray, d=> d['number']);
-            const ManhattanMinMax = d3.extent(treeArray, function(d) {
-                if (d['borough'] == "Manhattan") {
-                    return d['number'];
-                }
-            })
-            console.log(treeNumMinMax);
-            console.log(ManhattanMinMax);
-            
-            var treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, treeNumMinMax[1]/5]);
-            console.log(treeArray.find(function(n) {
-                                    return n.postcode == 83;
-                                }));
-            
-            function showTrees(){
-                // drawLegend(maxAll, scaleAll);
-                tozoom.append("g")
-                    .attr("id","nyctreemap")
-                    .selectAll("path")
-                    .data(zip.features)
-                    .enter().append("path")
-                    .attr("d", path)
-                    .attr("id", function(d,i) {
-                        return "poly" + i;
-                    })
-                    .style("fill", function(d,i) {
-                        // console.log(d);
-                        // var id = d.properties.OBJECTID;
-                        var num = treeArray.find(function(n) {
-                                    return n.postcode == Number(d.properties.postalCode);
-                                });
-                        // console.log(num);
-                        if (num != undefined) {
-                            return treeColorScale(num.number);
-                        }
-                        else if (num == 0)
-                            return "grey"
-                        else if (num == undefined)
-                            return "grey";
-                        // return scale(i);
-                    })
-                    .attr("stroke-width", 0.5)
-                    .attr("stroke", "white")
-                    // .on("mouseover", function(d,i) {
-                    //     d3.select("#zipPopOver")
-                    //         .transition()
-                    //         .style("opacity", 1)
-                    //         // .style("left", "650px")
-                    //         // .style("top", "130px")
-                    //         .text(function(){
-                    //             // var num = cuisine.find(function(e) {
-                    //             // return e.cuisine == cuisineObj.cuisine
-                    //             // })
-                    //             //         .area.find(function(n) {
-                    //             //             return n.zip == d.properties.postalCode;
-                    //             //         });
-                    //             var num = cuisineAll.find(function(e) {
-                    //                 return e.zip == d.properties.postalCode;
-                    //             });
-                    //             // console.log(num);
-                    //             if (num != undefined) {
-                    //                 return num.number + " " + " restaurants in " + " | " + num.zip;
-                    //             }
-                    //             else if (num == undefined)
-                    //                 return "0 "+ " restaurant in "  + " | " + d.properties.postalCode;
-                    //     })
-                    // })
-                    // .on("mouseout", function(){
-                    //     d3.select("#zipPopOver")
-                    //             .style("opacity", 0)
-                    // })
-                
-            }
-            showTrees();
+      // cuisine = cuisine.sort();
+      function compare(a, b) {
+        // Use toUpperCase() to ignore character casing
+        const genreA = a.cuisine.toUpperCase();
+        const genreB = b.cuisine.toUpperCase();
 
-            
+        let comparison = 0;
+        if (genreA > genreB) {
+          comparison = 1;
+        } else if (genreA < genreB) {
+          comparison = -1;
+        }
+        return comparison;
+      }
 
-            
-            // cuisine = cuisine.sort();
-            function compare(a, b) {
-                // Use toUpperCase() to ignore character casing
-                const genreA = a.cuisine.toUpperCase();
-                const genreB = b.cuisine.toUpperCase();
 
-                let comparison = 0;
-                if (genreA > genreB) {
-                    comparison = 1;
-                } 
-                else if (genreA < genreB) {
-                    comparison = -1;
-                }
-                return comparison;
-            }
 
-            
-            
 
-            // function drawLegend(max, scaleLegend) {
-            //     // Bonus code here to draw an adaptive gradient legend so we can see different color scales for choropleth maps
-            //     //  Credit Prof. Rz if you are basing a legend on this structure, and note performance issues
-                
-            //     const legend = d3.select("#legend");
-            //     const legendWidth = legend.attr("width");
-            //     const legendHeight = legend.attr("height");
-            //     const barHeight = 40;
-            //     const stepSize = (legendWidth-40)/(max); // warning, not using a canvas element so lots of rect tags will be created for low stepSize, causing issues with performance
-            //     // Use minMax from step 3c, but extend range by 1 in either direction to expose more features
-            //     const pixelScale = d3.scaleLinear().domain([0,legendWidth-40]).range([1,max]); // In this case the "data" are pixels, and we get numbers to use in colorScale
-            //     const barScale = d3.scaleLinear().domain([1,max]).range([0,legendWidth-40]);
-            //     var tick = 5;
-            //     if (max < 5)
-            //         tick = max;
-            //     const barAxis = d3.axisBottom(barScale).ticks(tick,"s");
-            //     d3.selectAll("#ticks").remove();
-            //     d3.selectAll("#bar").remove();
-            //     legend.append("g")
-            //         .attr("class", "colorbar axis")
-            //         .attr("id", "ticks")
-            //         .attr("transform","translate("+(20)+","+(barHeight+5)+")")
-            //         .call(barAxis);
-            //     // d3.selectAll(".domain").attr("opacity", 0);
-            //     // Draw rects of color down the bar
-            //     let bar = legend.append("g").attr("transform","translate("+(20)+","+(0)+")").attr("id", "bar");
-            //     for (let i=0; i<legendWidth-40; i=i+stepSize) {
-            //         bar.append("rect")
-            //             .attr("x", i)
-            //             .attr("y", 0)
-            //             .attr("width", stepSize)
-            //             .attr("height",barHeight)
-            //             .style("fill", scaleLegend( pixelScale(i) )); // pixels => countData => color
-            //     }
-            //     // Put lines in to mark actual min and max of our data
-            //     // bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(1)).attr("x2", barScale(1)).attr("y1", 0).attr("y1", barHeight+4);
-            //     // bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(max)).attr("x2", barScale(max)).attr("y1", 0).attr("y1", barHeight+4);
+      // function drawLegend(max, scaleLegend) {
+      //     // Bonus code here to draw an adaptive gradient legend so we can see different color scales for choropleth maps
+      //     //  Credit Prof. Rz if you are basing a legend on this structure, and note performance issues
 
-            // }
-            
-            
-                    
-                    
-            
-        
-        // zoom---------------------------------------------------
-        var zoom = d3.zoom()
-                .scaleExtent([1,10])
-                .on("zoom", zoomed);
+      //     const legend = d3.select("#legend");
+      //     const legendWidth = legend.attr("width");
+      //     const legendHeight = legend.attr("height");
+      //     const barHeight = 40;
+      //     const stepSize = (legendWidth-40)/(max); // warning, not using a canvas element so lots of rect tags will be created for low stepSize, causing issues with performance
+      //     // Use minMax from step 3c, but extend range by 1 in either direction to expose more features
+      //     const pixelScale = d3.scaleLinear().domain([0,legendWidth-40]).range([1,max]); // In this case the "data" are pixels, and we get numbers to use in colorScale
+      //     const barScale = d3.scaleLinear().domain([1,max]).range([0,legendWidth-40]);
+      //     var tick = 5;
+      //     if (max < 5)
+      //         tick = max;
+      //     const barAxis = d3.axisBottom(barScale).ticks(tick,"s");
+      //     d3.selectAll("#ticks").remove();
+      //     d3.selectAll("#bar").remove();
+      //     legend.append("g")
+      //         .attr("class", "colorbar axis")
+      //         .attr("id", "ticks")
+      //         .attr("transform","translate("+(20)+","+(barHeight+5)+")")
+      //         .call(barAxis);
+      //     // d3.selectAll(".domain").attr("opacity", 0);
+      //     // Draw rects of color down the bar
+      //     let bar = legend.append("g").attr("transform","translate("+(20)+","+(0)+")").attr("id", "bar");
+      //     for (let i=0; i<legendWidth-40; i=i+stepSize) {
+      //         bar.append("rect")
+      //             .attr("x", i)
+      //             .attr("y", 0)
+      //             .attr("width", stepSize)
+      //             .attr("height",barHeight)
+      //             .style("fill", scaleLegend( pixelScale(i) )); // pixels => countData => color
+      //     }
+      //     // Put lines in to mark actual min and max of our data
+      //     // bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(1)).attr("x2", barScale(1)).attr("y1", 0).attr("y1", barHeight+4);
+      //     // bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(max)).attr("x2", barScale(max)).attr("y1", 0).attr("y1", barHeight+4);
 
-        svga.call(zoom);
-        svga.call(zoom.transform, d3.zoomIdentity);
+      // }
 
-        function zoomed() {
+
+
+
+
+
+      // zoom---------------------------------------------------
+      var zoom = d3.zoom()
+        .scaleExtent([1, 10])
+        .on("zoom", zoomed);
+
+      svga.call(zoom);
+      svga.call(zoom.transform, d3.zoomIdentity);
+
+      function zoomed() {
         let transform = d3.event.transform;
-        tozoom.attr("transform", transform.toString() );
+        tozoom.attr("transform", transform.toString());
         tozoom.select(".state-outline")
-                    .style("stroke-width", 4 / transform.k);
+          .style("stroke-width", 4 / transform.k);
         tozoom.select(".county-outline")
-                    .style("stroke-width", 1 / transform.k);
+          .style("stroke-width", 1 / transform.k);
 
         tozoom.select(".county-outline")
-                    .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+          .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
         tozoom.selectAll(".county")
-                    .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+          .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
 
-        };    
-            
-        };
-        requestData();
-        
-        </script>
-    </body>
+      };
+
+    };
+    requestData();
+  </script>
+</body>
+
 </html>
