@@ -68,6 +68,11 @@
         and the leaf nodes are colored to show different tree types. <br><br><br>
       </font>
     </center>
+    <center><div style="background-color:lightgrey; height: 100px; width: 800px;">
+      <h4>Hover to see tree information!</h6>
+      <p>Tree type: <span id="type"></span></p>
+      <p>Number of trees: <span id="number"></span></p>
+    </div></center>
     <center><svg id="treeType" width="800" height="800"></svg></center>
   </p>
   <p id="nycmap">
@@ -382,31 +387,41 @@
         .style("fill", function(d) {
           return typeColorScale(d.value)
         })
-
-      svg2.selectAll("text")
-        .data(typeRoot.leaves())
-        .enter()
-        .append("text")
-        .attr("x", function(d) {
-          return d.x0 + 5
-        }) // +10 to adjust position (more right)
-        .attr("y", function(d) {
-          return d.y0 + 20
-        }) // +20 to adjust position (lower)
-        .text(function(d) {
-          return d.data.name + " \br " + d.value
+        .on("mouseover", function(d) {
+          d3.select("#type").text(d.data.name);
+          d3.select("#number").text(d.data.value);
+          d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
         })
-        .attr("font-size", "12px")
-        .attr("fill", function(d) {
+        .on("mouseout", function(d) {
+          d3.select("#type").text("");
+          d3.select("#number").text("");
+          d3.select(this).style("stroke", "black").style("stroke-width", 1);
+        });
 
-          if (d.value < (typeMinMax[1] / 2)) {
-            if (d.value < 100)
-              return "none";
-            else
-              return "black";
-          } else
-            return "#F8F8F8";
-        })
+      // svg2.selectAll("text")
+      //   .data(typeRoot.leaves())
+      //   .enter()
+      //   .append("text")
+      //   .attr("x", function(d) {
+      //     return d.x0 + 5
+      //   }) // +10 to adjust position (more right)
+      //   .attr("y", function(d) {
+      //     return d.y0 + 20
+      //   }) // +20 to adjust position (lower)
+      //   .text(function(d) {
+      //     return d.data.name + " \br " + d.value
+      //   })
+      //   .attr("font-size", "12px")
+      //   .attr("fill", function(d) {
+      //
+      //     if (d.value < (typeMinMax[1] / 2)) {
+      //       if (d.value < 100)
+      //         return "none";
+      //       else
+      //         return "black";
+      //     } else
+      //       return "#F8F8F8";
+      //   })
 
 
 
