@@ -44,12 +44,10 @@
   </p>
 
   <p id="treemap">
-    <center><div style="background-color:lightblue; height: 180px; width: 800px;">
-      <p>Borough: <span id="borough"></span></p>
-      <br>
+    <center><div style="background-color:lightgrey; height: 100px; width: 800px;">
+      <h4>Hover to see tree information!</h6>
       <p>Name: <span id="name"></span></p>
-      <br>
-      <p>Zip Code: <span id="zip"></span></p>
+      <p>Trees Planted: <span id="planted"></span></p>
     </div></center>
     <center><svg id="treemap" width="800" height="800"></svg></center>
   </p>
@@ -326,34 +324,38 @@
           return ntaColorScale(d.value)
         })
         .on("mouseover", function(d) {
-          console.log(d.data.name);
-          d3.select("#borough").text(d.data.borough);
           d3.select("#name").text(d.data.name);
-          d3.select("#zip").text(d.data.postcode);
+          d3.select("#planted").text(d.data.value);
+          d3.select(this).style("stroke", "white").style("stroke-width", 7);
+        })
+        .on("mouseout", function(d) {
+          d3.select("#name").text("");
+          d3.select("#planted").text("");
+          d3.select(this).style("stroke", "black").style("stroke-width", 1);
         });
         // search to get here BOI
 
-      svg.selectAll("text")
-        .data(root.leaves())
-        .enter()
-        .append("text")
-        .attr("x", function(d) {
-          return d.x0 + 5
-        }) // +10 to adjust position (more right)
-        .attr("y", function(d) {
-          return d.y0 + 10
-        }) // +20 to adjust position (lower)
-        .text(function(d) {
-          return d.data.name + " \br " + d.value
-        })
-        .attr("font-size", "10px")
-        .attr("fill", function(d) {
-
-          if (d.value < (2000))
-            return "none";
-          else
-            return "#F8F8F8";
-        });
+      // svg.selectAll("text")
+      //   .data(root.leaves())
+      //   .enter()
+      //   .append("text")
+      //   .attr("x", function(d) {
+      //     return d.x0 + 5
+      //   }) // +10 to adjust position (more right)
+      //   .attr("y", function(d) {
+      //     return d.y0 + 10
+      //   }) // +20 to adjust position (lower)
+      //   .text(function(d) {
+      //     return d.data.name + " \br " + d.value
+      //   })
+      //   .attr("font-size", "10px")
+      //   .attr("fill", function(d) {
+      //
+      //     if (d.value < (2000))
+      //       return "none";
+      //     else
+      //       return "#F8F8F8";
+      //   });
 
       // tree types map
       d3.treemap()
