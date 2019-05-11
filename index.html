@@ -326,7 +326,7 @@
         .on("mouseover", function(d) {
           d3.select("#name").text(d.data.name);
           d3.select("#planted").text(d.data.value);
-          d3.select(this).style("stroke", "white").style("stroke-width", 7);
+          d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
         })
         .on("mouseout", function(d) {
           d3.select("#name").text("");
