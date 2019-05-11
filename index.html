@@ -6,154 +6,8 @@
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-  <style>
-    body {
-      background-color: #F8F8F8;
-      font-family: Montserrat, Helvetica, sans-serif;
-    }
-
-    #title {
-      background-color: #333;
-      /* Black background color */
-      position: fixed;
-      /* Make it stick/fixed */
-      top: 0;
-      /* Stay on top */
-      width: 100%;
-      /* Full width */
-      transition: top 0.3s;
-      /* Transition effect when sliding down (and up) */
-      padding-top: 10px;
-      padding-bottom: 10px;
-      color: #F8F8F8;
-      font-weight: bold;
-      font-size: 35px;
-      font-family: Montserrat;
-      text-align: center;
-      /* margin-right: auto; */
-      /* border-bottom:  */
-    }
-
-    #container {
-      margin-top: 80px;
-      display: flex;
-    }
-
-    #nycmap {
-      display: inline-block;
-    }
-
-    #map {
-      /* stroke: #fff; */
-      /* stroke-width: .5; */
-      /* stroke-dasharray: 1; */
-      fill: grey;
-    }
-
-    #stationPopover {
-      position: absolute;
-      text-align: center;
-      padding: 10px;
-      font-size: 15px;
-      font-family: Montserrat;
-      background-color: #fff;
-      border-width: 2px;
-      border-style: solid;
-      border-color: red;
-      border-radius: 7px;
-      pointer-events: none;
-      opacity: 0;
-    }
-
-    #zipPopOver {
-      position: fixed;
-      text-align: center;
-      padding: 10px;
-      font-size: 15px;
-      font-family: Montserrat;
-      background-color: rgba(73, 92, 107, 0.8);
-      border-radius: 5px;
-      pointer-events: none;
-      opacity: 0;
-      color: white;
-      width: 200px;
-      left: 650px;
-      top: 120px;
-    }
-
-    /* .zipPopOver {
-
-        } */
-    #stops {
-      z-index: 150;
-      fill: white;
-      stroke: #888;
-    }
-
-    #routes {
-      stroke: #888;
-      stroke-width: 3;
-      fill: none;
-      z-index: 1000;
-    }
-
-    #menu {
-      display: inline-block;
-    }
-
-    #subwayOption {
-      /* position: relative;
-            top:100px;
-            left:1000px; */
-      /* display: inline-block; */
-      width: 294px;
-      display: inline-block;
-
-      background-color: rgba(100, 116, 128, 0.2);
-
-      border: none;
-      color: white;
-      padding: 10px 28px;
-      text-align: center;
-      text-decoration: none;
-      font-family: Helvetica;
-      display: inline-block;
-      font-size: 15px;
-      font-family: Montserrat;
-    }
-
-    #cuisineList {
-      /* padding-top: 200px; */
-      width: 294px;
-      display: inline-block;
-      height: 800px;
-      overflow-y: scroll;
-      list-style-type: none;
-      padding-left: 0;
-      /* color:aliceblue; */
-      font-family: Montserrat;
-      line-height: 30px;
-      /* background-color: rgba(100, 116, 128, 0.2); */
-      /* color: aliceblue; */
-    }
-
-    #cuisineList li {
-      color: #F8F8F8;
-      background-color: rgba(100, 116, 128, 0.2);
-      /* background-color: rgba(30, 215, 96, 0.1); */
-      padding-top: 5px;
-      padding-left: 10px;
-      margin-bottom: 2px;
-    }
-
-    #legend {
-      position: fixed;
-      top: 120px;
-      font-family: Montserrat;
-      color: white;
-
-    }
-  </style>
+  <link rel="stylesheet" href="./index.css">
+  
 </head>
 
 <body>
@@ -191,6 +45,9 @@
 
   <p id="treemap">
     <center><svg id="treemap" width="800" height="800"></svg></center>
+  </p>
+  <p>
+    <center><svg id="piechart" width="800" height="800"></svg></center>
   </p>
   <p id="treeType">
     <center>
@@ -386,7 +243,34 @@
           };
         })
       };
-      console.log(typeTree);
+      console.log(JSON.stringify(typeTree));
+      var color = d3.scaleOrdinal(['#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c']);
+      var width = 800;
+      var height = 800;
+      var piesvg = d3.select("svg#piechart")
+                      .append("g")
+                      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+                    
+      var radius = 200;
+      var pie = d3.pie()
+        .value(function(d) {return d.value; })
+      var data_ready = pie(typeTree.children);
+
+      // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+      piesvg
+        .selectAll('whatever')
+        .data(data_ready)
+        .enter()
+        .append('path')
+        .attr('d', d3.arc()
+          .innerRadius(0)
+          .outerRadius(radius)
+        )
+        .attr('fill', function(d,i){ return(color(i)) })
+        // .attr("stroke", "black")
+        // .style("stroke-width", "2px")
+        .style("opacity", 0.7)
+
 
       var typeRoot = d3.hierarchy(typeTree).sum(d => d.value);
       console.log(typeRoot.leaves());
@@ -652,27 +536,27 @@
 
 
       // zoom---------------------------------------------------
-      var zoom = d3.zoom()
-        .scaleExtent([1, 10])
-        .on("zoom", zoomed);
+      // var zoom = d3.zoom()
+      //   .scaleExtent([1, 10])
+      //   .on("zoom", zoomed);
 
-      svga.call(zoom);
-      svga.call(zoom.transform, d3.zoomIdentity);
+      // svga.call(zoom);
+      // svga.call(zoom.transform, d3.zoomIdentity);
 
-      function zoomed() {
-        let transform = d3.event.transform;
-        tozoom.attr("transform", transform.toString());
-        tozoom.select(".state-outline")
-          .style("stroke-width", 4 / transform.k);
-        tozoom.select(".county-outline")
-          .style("stroke-width", 1 / transform.k);
+      // function zoomed() {
+      //   let transform = d3.event.transform;
+      //   tozoom.attr("transform", transform.toString());
+      //   tozoom.select(".state-outline")
+      //     .style("stroke-width", 4 / transform.k);
+      //   tozoom.select(".county-outline")
+      //     .style("stroke-width", 1 / transform.k);
 
-        tozoom.select(".county-outline")
-          .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
-        tozoom.selectAll(".county")
-          .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+      //   tozoom.select(".county-outline")
+      //     .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+      //   tozoom.selectAll(".county")
+      //     .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
 
-      };
+      // };
 
     };
     requestData();
