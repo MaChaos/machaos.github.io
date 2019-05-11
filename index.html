@@ -7,7 +7,7 @@
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link rel="stylesheet" href="./index.css">
-  
+
 </head>
 
 <body>
@@ -44,6 +44,13 @@
   </p>
 
   <p id="treemap">
+    <center><div style="background-color:lightblue; height: 180px; width: 800px;">
+      <p>Borough: <span id="borough"></span></p>
+      <br>
+      <p>Name: <span id="name"></span></p>
+      <br>
+      <p>Zip Code: <span id="zip"></span></p>
+    </div></center>
     <center><svg id="treemap" width="800" height="800"></svg></center>
   </p>
   <p>
@@ -250,7 +257,7 @@
       var piesvg = d3.select("svg#piechart")
                       .append("g")
                       .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-                    
+
       var radius = 200;
       var pie = d3.pie()
         .value(function(d) {return d.value; })
@@ -318,6 +325,13 @@
         .style("fill", function(d) {
           return ntaColorScale(d.value)
         })
+        .on("mouseover", function(d) {
+          console.log(d.data.name);
+          d3.select("#borough").text(d.data.borough);
+          d3.select("#name").text(d.data.name);
+          d3.select("#zip").text(d.data.postcode);
+        });
+        // search to get here BOI
 
       svg.selectAll("text")
         .data(root.leaves())
@@ -339,7 +353,7 @@
             return "none";
           else
             return "#F8F8F8";
-        })
+        });
 
       // tree types map
       d3.treemap()
