@@ -56,7 +56,7 @@
 
   <div>
     <p>Number of trees by population of neighborhood</p>
-  <svg id="population" height="600" width="1000" font-family="sans-serif" font-size="10" style="background: #F5F5F5">
+  <svg id="population" height="400" width="600" font-family="sans-serif" font-size="10" style="background: #F5F5F5">
   </svg>
   </div>
 
@@ -407,8 +407,49 @@
           tree_and_pop.push(hello);
         })
 
+        //create svg data
+        let svgPop = d3.select("svg#population");
+        let widthPop = svgPop.attr("width");
+        let heightPop = svgPop .attr("height");
+        let marginPop = {top: 10, right: 10, bottom: 50, left: 100};
 
+        //max population
+        let maxPop = d3.max(tree_and_pop, function(d) {return Math.max(d['pop'])});
 
+        //max number of trees
+        let maxTrees = d3.max(tree_and_pop, function(d) {return Math.max(d['number'])});
+
+        //population scale
+        let popScale = d3.scaleLinear().domain([0,maxPop]).range([marginPop.left, widthPop-10]);
+
+        //tree frequency scale
+        let treeScale = d3.scaleLinear().domain([0, maxTrees]).range([heightPop- marginPop.bottom, 0]);
+
+        bottomAxis = d3.axisBottom(popScale);
+        svgPop.append("g").attr("class", "x axis")
+          .attr("transform", "translate(0, "+(heightPop - marginPop.top - 30) +")")
+          // .attr("stroke", "red")
+          .call(bottomAxis);
+
+        leftAxis = d3.axisLeft(treeScale);
+        svgPop.append("g").attr("class", "y axis")
+          .attr("transform", "translate("+(marginPop.left - 30)+", "+(marginPop.top - 5)+")")
+          .call(leftAxis);
+
+          tree_and_pop.forEach(function(d, i) {
+            svgPop.append("line")
+            .attr("x1", popScale(d['pop'])) //bottom scale
+            .attr("x2", popScale(d['pop']))
+            .attr("y1", heightPop)
+            .attr("y2", treeScale(d['number']))
+            .style("stroke", "#5555F0")
+            .style("stroke-width", 6)
+
+            .on("mouseover", function() {
+                console.log("nothing yet");
+            })
+            .attr("transform", "translate(0, "+(-40) +")");
+          });
 
 
       // svg.selectAll("text")
