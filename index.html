@@ -53,9 +53,13 @@
     </div></center>
     <center><svg id="treemap" width="800" height="800"></svg></center>
   </p>
-  <p>
-    <center><svg id="piechart" width="800" height="800"></svg></center>
-  </p>
+
+  <div>
+    <p>Number of trees by population of neighborhood</p>
+  <svg id="population" height="600" width="1000" font-family="sans-serif" font-size="10" style="background: #F5F5F5">
+  </svg>
+  </div>
+
   <p id="treeType">
     <center>
       <h2>
@@ -76,6 +80,9 @@
       <p>Number of trees: <span id="number"></span></p>
     </div></center>
     <center><svg id="treeType" width="800" height="800"></svg></center>
+  </p>
+  <p>
+    <center><svg id="piechart" width="800" height="800"></svg></center>
   </p>
   <p id="nycmap">
     <center>
@@ -152,6 +159,9 @@
       const zip = await d3.json("./nyczip.geojson");
 
       const tree = await d3.csv("./2015_tree_no_ltlg.csv");
+
+      const pop = await d3.csv("./zip_code_database_pop.csv");
+
       // console.log(zip.features);
       // console.log(zip.features['properties']['postalCode']);
 
@@ -359,6 +369,26 @@
           d3.select(this).style("stroke", "black").style("stroke-width", 1);
         });
         // search to get here BOI
+
+        //Trees by Population Graph
+        var all_zip = [];
+        console.log("look here");
+        console.log(all_zip);
+
+        tree.forEach( (d, i) => {
+          var zip = d.postcode
+          // console.log(zip)
+          // d['day_year'] =  Number(d["day_year"]);
+          // d['n'] =  Number(d["n"]);
+          // d['day'] =  Number(d["day"]);
+          // d['month'] =  Number(d["month"]);
+        });
+
+        // treeArray.push({
+        //   postcode: postcode,
+        //   borough: d['borough'],
+        //   number: 1
+        // })
 
       // svg.selectAll("text")
       //   .data(root.leaves())
