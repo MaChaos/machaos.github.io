@@ -62,8 +62,9 @@ body {
       <p><b>Borough: </b><span id="borough"></span></p>
       <p><b>Neighborhood: </b><span id="name"></span></p>
       <p><b>Trees Planted: </b><span id="planted"></span></p>
+      <p><b>Population Size: </b><span id="population"></span></p>
       <p><b>Most Common Trees: </b><span id="common"></span></p>
-      <p><b>Least Common Trees: </b><span id="uncommon"></span></p>
+      <!-- <p><b>Least Common Trees: </b><span id="uncommon"></span></p> -->
     </div>
   </p>
 
@@ -361,13 +362,13 @@ body {
           var uncommon = sorted.slice(-3);
 
           d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + "), ");
-          d3.select("#uncommon").text(uncommon[0].key + " (" + uncommon[0].value + "), " + uncommon[1].key + " (" + uncommon[1].value + "), " + uncommon[2].key + " (" + uncommon[2].value + "), ");
+          // d3.select("#uncommon").text(uncommon[0].key + " (" + uncommon[0].value + "), " + uncommon[1].key + " (" + uncommon[1].value + "), " + uncommon[2].key + " (" + uncommon[2].value + "), ");
         })
         .on("mouseout", function(d) {
           d3.select("#name").text("");
           d3.select("#planted").text("");
           d3.select("#common").text("");
-          d3.select("#uncommon").text("");
+          // d3.select("#uncommon").text("");
           d3.select("#borough").text("");
           d3.select(this).style("stroke", "black").style("stroke-width", 1);
         });
@@ -404,7 +405,7 @@ body {
         let svgPop = d3.select("svg#population");
         let widthPop = svgPop.attr("width");
         let heightPop = svgPop .attr("height");
-        let marginPop = {top: 10, right: 10, bottom: 50, left: 100};
+        let marginPop = {top: 10, right: 10, bottom: 35, left: 100};
 
         //max population
         let maxPop = d3.max(tree_and_pop, function(d) {return Math.max(d['pop'])});
@@ -416,7 +417,7 @@ body {
         let popScale = d3.scaleLinear().domain([0,maxPop]).range([marginPop.left, widthPop-10]);
 
         //tree frequency scale
-        let treeScale = d3.scaleLinear().domain([0, maxTrees]).range([heightPop- marginPop.bottom, 0]);
+        let treeScale = d3.scaleLinear().domain([0, maxTrees]).range([heightPop - (marginPop.top + marginPop.bottom), 0]);
 
         bottomAxis = d3.axisBottom(popScale);
         svgPop.append("g").attr("class", "x axis")
@@ -430,22 +431,24 @@ body {
           .call(leftAxis);
 
           tree_and_pop.forEach(function(d, i) {
-            svgPop.append("line")
-            .attr("x1", popScale(d['pop'])) //bottom scale
-            .attr("x2", popScale(d['pop']))
-            .attr("y1", heightPop)
-            .attr("y2", treeScale(d['number']))
-            .style("stroke", "green")
-            .style("stroke-width", 2)
+            svgPop.append("circle")
+            .attr("cx", popScale(d['pop']))
+            .attr("cy", treeScale(d['number']) + marginPop.bottom + marginPop.top)
+            .attr("r", 4)
+            .style("fill", "green")
+
+
             .on("mouseover", function() {
+                console.log(d.pop);
+                console.log(d.number);
                 d3.select(this)
-                .style("stroke", "yellow")
-                .style("stroke-width", 4);
+                .style("fill", "lightgreen")
+                .attr("r", 10);
             })
             .on("mouseout", function(d) {
               d3.select(this)
-                .style("stroke", "green")
-                .style("stroke-width", 2);
+                .style("fill", "green")
+                .attr("r", 4);
             })
             .attr("transform", "translate(0, "+(-40) +")");
           });
