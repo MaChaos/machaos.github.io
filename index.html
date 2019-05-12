@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="./index.css">
 
 </head>
+<style>
+body {
+  margin: 60px;
+}
+</style>
 
 <body>
   <!-- <div id="container"></div> -->
@@ -27,38 +32,53 @@
           the distribution and some fun facts of the trees. <br></font>
       </center>
     </div>
-    <center>
-      <h2>
-        <font color="black" size="4">
-          <br><br><br><br><b>Where are the trees located in New York City? </b></font>
-      </h2>
-      <font color="black" size="2">
-        The following treemap shows how many trees are
-        planted in each neighborhood. Each branch of the treemap is
-        given a rectangle standing for a borough, <br>which is then tiled with
-        smaller rectangles representing neighborhoods. A leaf node's
-        rectangle has an area proportional to the number of trees,
-        <br>and the leaf nodes are colored to show different neighborhoods. <br><br>
-      </font>
-    </center>
   </p>
 
-  <p id="treemap">
-    <center><div style="background-color:lightgrey; height: 200px; width: 800px;">
-      <h4>Hover to see tree information!</h6>
-      <p>Neighborhood: <span id="name"></span></p>
-      <p>Trees Planted: <span id="planted"></span></p>
-      <p>Most Common Trees: <span id="common"></span></p>
-      <p>Least Common Trees: <span id="uncommon"></span></p>
-    </div></center>
-    <center><svg id="treemap" width="800" height="800"></svg></center>
-  </p>
-
+<!-- first square graph visualization (recomment this to second visual) -->
+<div>
+  <!-- information for square graph -->
   <div>
-    <p>Number of trees by population of neighborhood</p>
+    <center><h2>
+      <font color="black" size="4"><br><br><br><br><b>Where are the trees located in New York City? </b></font>
+    </h2></center>
+  </div>
+
+  <!-- square graph -->
+  <svg id="treemap" width="800" height="800"></svg>
+
+<div style="display: inline-block;">
+<!-- hover information square -->
+<div style="display:inline-block; margin-left: 20px;">
+  <div style="width: 700px">
+    <p>The treemap on the left shows how many trees are
+    planted in each neighborhood. Each branch of the treemap is
+    given a rectangle standing for a borough, which is then tiled with
+    smaller rectangles representing neighborhoods. A leaf node's
+    rectangle has an area proportional to the number of trees,and the leaf nodes are colored to show different neighborhoods.</p>
+  </div>
+  <p id="treemap">
+    <div style="background-color:lightgrey; height: 200px; width: 700px;">
+      <h4>Hover to see tree information!</h6>
+      <p><b>Borough: </b><span id="borough"></span></p>
+      <p><b>Neighborhood: </b><span id="name"></span></p>
+      <p><b>Trees Planted: </b><span id="planted"></span></p>
+      <p><b>Most Common Trees: </b><span id="common"></span></p>
+      <p><b>Least Common Trees: </b><span id="uncommon"></span></p>
+    </div>
+  </p>
+
+<!-- neighborhood population graph (with title)-->
+  <div style="display:inline-block;">
+    <p>Is neighborhood population related to number of trees?</p>
   <svg id="population" height="400" width="600" font-family="sans-serif" font-size="10" style="background: #F5F5F5">
   </svg>
   </div>
+</div>
+</div>
+</div>
+
+
+
 
   <p id="treeType">
     <center>
@@ -348,11 +368,13 @@
           return ntaColorScale(d.value)
         })
         .on("mouseover", function(d) {
-          var boroughName = d.data.name;
-          d3.select("#name").text(boroughName);
+          var boroughName = d.parent.data.name;
+          var nName = d.data.name;
+          d3.select("#name").text(nName);
           d3.select("#planted").text(d.data.value);
+          d3.select("#borough").text(boroughName);
           d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
-          boroughData = (tree.filter(d => d['nta_name'] === boroughName));
+          boroughData = (tree.filter(d => d['nta_name'] === nName));
           var boroughByTree = d3.nest()
             .key(function(d) { return d.spc_common; })
             .rollup(function(v) {return v.length;})
@@ -372,6 +394,7 @@
           d3.select("#planted").text("");
           d3.select("#common").text("");
           d3.select("#uncommon").text("");
+          d3.select("#borough").text("");
           d3.select(this).style("stroke", "black").style("stroke-width", 1);
         });
         // search to get here BOI
@@ -448,8 +471,29 @@
             .on("mouseover", function() {
                 console.log("nothing yet");
             })
+            .on("mouseout", function(d) {
+              //
+            })
             .attr("transform", "translate(0, "+(-40) +")");
           });
+
+          //label for x axis
+          svgPop.append("text")
+            // .attr("transform", "translate(" + (widthPop/2) + " ," + (heightPop + marginPop.top + 20) + ")")
+            // .attr("transform", "translate(100)")
+            .attr("x", widthPop/2 + 20)
+            .attr("y", heightPop - 10)
+            .style("text-anchor", "middle")
+            .text("Population by Neighborhood");
+
+          //label for y axis
+          svgPop.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -heightPop/2 + 20)
+            .attr("y", 10)
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Number of Trees");
 
 
       // svg.selectAll("text")
