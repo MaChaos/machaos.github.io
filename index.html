@@ -167,16 +167,16 @@
 
       const zipMax = d3.max(zip.features, d => d['properties']['postalCode']);
       const zipMin = d3.min(zip.features, d => d['properties']['postalCode'])
-      console.log(zipMax);
-      console.log(zipMin);
+      // console.log(zipMax);
+      // console.log(zipMin);
       // console.log(tree);
 
       const zipTreeMax = d3.max(tree, d => Number(d['postcode']));
       const zipTreeMin = d3.min(tree, d => Number(d['postcode']));
       const treeMinMax = d3.extent(tree, d => Number(d['postcode']));
-      console.log(zipTreeMax);
-      console.log(zipTreeMin);
-      console.log(treeMinMax);
+      // console.log(zipTreeMax);
+      // console.log(zipTreeMin);
+      // console.log(treeMinMax);
 
       var treeArray = [];
       const treeMap = new Map();
@@ -223,6 +223,8 @@
           })
           .entries(tree)
       }
+      console.log(entries);
+
       var treeData = {
         "name": "nyc",
         "children": entries.values.map(function(borough) {
@@ -243,6 +245,8 @@
       }; //end of var declaration
       // var data = {"key": "nyc", "values": entries};
       // console.log(data);
+
+      // console.log(treeData);
       var type = {
         "key": "nyc",
         "values": d3.nest()
@@ -255,7 +259,7 @@
           })
           .entries(tree)
       }
-      console.log(type);
+      // console.log(type);
 
       var typeTree = {
         "name": "nyc",
@@ -266,7 +270,7 @@
           };
         })
       };
-      console.log(JSON.stringify(typeTree));
+      // console.log(JSON.stringify(typeTree));
       var color = d3.scaleOrdinal(['#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c']);
       var width = 800;
       var height = 800;
@@ -296,7 +300,7 @@
 
 
       var typeRoot = d3.hierarchy(typeTree).sum(d => d.value);
-      console.log(typeRoot.leaves());
+      // console.log(typeRoot.leaves());
 
       var test = await d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_dendrogram_full.json");
       var root = d3.hierarchy(treeData)
@@ -305,7 +309,9 @@
 
           return d.value;
         })
+
       // .sort((a, b) => b.values - a.values)
+
       var root2 = d3.hierarchy(test)
         .sum(function(d) {
           return d.value
@@ -357,7 +363,7 @@
           });
           var common = sorted.slice(0,3);
           var uncommon = sorted.slice(-3);
-          console.log();
+          // console.log();
           d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + "), ");
           d3.select("#uncommon").text(uncommon[0].key + " (" + uncommon[0].value + "), " + uncommon[1].key + " (" + uncommon[1].value + "), " + uncommon[2].key + " (" + uncommon[2].value + "), ");
         })
@@ -369,26 +375,41 @@
           d3.select(this).style("stroke", "black").style("stroke-width", 1);
         });
         // search to get here BOI
-
+        // console.log(root.leaves());
         //Trees by Population Graph
-        var all_zip = [];
-        console.log("look here");
-        console.log(all_zip);
 
+        console.log(treeArray.find(function(n) {
+          return n.postcode == 83;
+        }))
+
+        //array of all zip codes
+        var all_zip = [];
         tree.forEach( (d, i) => {
           var zip = d.postcode
-          // console.log(zip)
-          // d['day_year'] =  Number(d["day_year"]);
-          // d['n'] =  Number(d["n"]);
-          // d['day'] =  Number(d["day"]);
-          // d['month'] =  Number(d["month"]);
+          if (!all_zip.includes(zip)) {
+            all_zip.push(zip)
+          }
         });
 
-        // treeArray.push({
-        //   postcode: postcode,
-        //   borough: d['borough'],
-        //   number: 1
-        // })
+        //array of just nyc zip codes
+        nyc_pop = pop.filter(d => all_zip.includes(d['zip']));
+        console.log(nyc_pop);
+
+        //array of tree frequency and population data for all neighborhoods
+        var tree_and_pop = [];
+        nyc_pop.forEach( (d, i) => {
+          var zip = d.zip;
+          var pop = d.irs_estimated_population_2015;
+          var hello = treeArray.find(function(n) {
+            return n.postcode == zip;
+          })
+          hello['pop'] = pop;
+          tree_and_pop.push(hello);
+        })
+
+
+
+
 
       // svg.selectAll("text")
       //   .data(root.leaves())
@@ -482,13 +503,13 @@
           return d['number'];
         }
       })
-      console.log(treeNumMinMax);
-      console.log(ManhattanMinMax);
+      // console.log(treeNumMinMax);
+      // console.log(ManhattanMinMax);
 
       var treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, treeNumMinMax[1] / 5]);
-      console.log(treeArray.find(function(n) {
-        return n.postcode == 83;
-      }));
+      // console.log(treeArray.find(function(n) {
+      //   return n.postcode == 83;
+      // }));
 
       function showTrees() {
         // drawLegend(maxAll, scaleAll);
