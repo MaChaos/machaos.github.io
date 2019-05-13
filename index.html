@@ -448,7 +448,6 @@ body {
           all_zip.push(zip);
           zip_name[zip] = name;
           name_zip[name] = zip;
-          // name_zip.push({[name]:zip});
         }
       });
 
@@ -569,7 +568,6 @@ body {
         bottomAxis = d3.axisBottom(popScale);
         svgPop.append("g").attr("class", "x axis")
           .attr("transform", "translate(0, "+(heightPop - marginPop.top - 30) +")")
-          // .attr("stroke", "red")
           .call(bottomAxis);
 
         leftAxis = d3.axisLeft(treeScale);
@@ -585,14 +583,22 @@ body {
             .style("fill", "green")
             .attr("id", "czip_" + d.postcode)
             .on("mouseover", function() {
-                // d3.select(this)
-                // .style("fill", "lightgreen")
-                // .attr("r", 10);
+                d3.select(this)
+                .style("fill", "lightgreen")
+                .attr("r", 10);
+                d3.select("#borough").text(d.borough);
+                d3.select("#name").text(zip_name[d.postcode]);
+                d3.select("#planted").text("");
+                d3.select("#population").text(d.pop + " People");
             })
             .on("mouseout", function(d) {
               d3.select(this)
                 .style("fill", "green")
                 .attr("r", 4);
+                d3.select("#borough").text("");
+                d3.select("#name").text("");
+                d3.select("#planted").text("");
+                d3.select("#population").text("");
             })
             .attr("transform", "translate(0, "+(-40) +")");
           });
