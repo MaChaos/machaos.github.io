@@ -1,6 +1,8 @@
 body {
-      background-color: #f8f8f8;
-      font-family: Montserrat, Helvetica, sans-serif;
+      background-color: white;
+      font-family: Arial, Helvetica, sans-serif;
+      min-width: 1250px;
+      
     }
     .axis path,
     .axis line {
@@ -42,12 +44,10 @@ body {
       /* border-bottom:  */
     }
     .nyctreemap path:hover {
-      fill:red !important;
+      fill:rgb(39, 13, 82) !important;
       
     }
-    .StatenIsland:hover {
-      fill: red !important;
-    }
+
     .boroughBtn:focus {
       background-color: #333;
       padding-top: 20px;
@@ -58,7 +58,9 @@ body {
     }
 
     #nycmap {
-      display: inline-block;
+      /* display: inline-block; */
+      margin-left: auto;
+      margin-right: auto;
     }
 
     #map {
@@ -67,6 +69,12 @@ body {
       /* stroke-dasharray: 1; */
       fill: grey;
     }
+    /* .hoverinfo{
+      margin: 10px;
+      background-color: rgb(128, 89, 7);
+      color: #F8F8F8;
+      border-radius: 5px;
+    } */
 
 
     

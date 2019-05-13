@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>project3</title>
+  <title>project 3: Tree Census in New York City</title>
   <meta charset="UTF-8">
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
@@ -22,130 +22,153 @@
 
     </h1>
     <p class="graphContent">
-      
+
     </p>
   </div>
 
 
 
-  <p id="projectTitle">
+  <div class="titleIntro">
     <center>
-      <h1>
+      <h1 class="title">
         Tree Census in New York City
       </h1>
     </center>
-    <div style="margin-left:10px; line-height:13px;">
+    <p class="intro">
       <center>
-        Our dataset contains information of
-        nearly every tree in New York City in 2015. You are going to explore
-        the distribution and some fun facts of the trees.
+        Street trees are important to us. They shade urban people in
+        the summer, clean the air, beautify the neighborhoods, help reduce
+        noise, and support important urban wildlife.
+        <br><br>Our dataset has information about every street tree in
+        New York City in 2015. We chose the dataset because we are curious
+        about the street trees in New York City, one of the largest cities
+        in the world:
+        <br><br>How many trees are there in each neighborhood/borough in
+        New York City? What species are most popular?
+        What species are most rare? Which borough has the best diversity
+        of trees? Do human activities affect the lives of street trees?
+        <br><br>Let’s explore together!
       </center>
-    </div>
-  </p>
+    </p>
+  </div>
 
   <!-- first square graph visualization -->
+  <div id="nyctreemap">
+    <div class="description">
+      <center>
+        <h2 class="graphTitle">
+          <br><br>Where are the street trees?
+        </h2>
+        <p class="graphContent">
+          The 2015 tree census counted 666,134 street trees citywide. <br><br>
+          The map below shows the distribution of all street trees in
+          New York City. The darker the color of the neighborhood is,
+          the more trees there are. <br><br>
+          You can play with the slider and hover over each area in the map
+          to explore the pattern of distribution.<br><br>
+          As you may figure out, Queens actually has the most trees,
+          with 242,414, followed by Brooklyn with 173,063 and Staten Island
+          with 103,313 street trees.
+        </p>
+      </center>
+    </div>
+    <center>
+        <h1 style="color:rgb(21, 92, 21); margin-top: 50px;">NYC Tree Density Map by Postal Area</h1>
+        <p>Hover to see the number of trees in that area</p>
+      <div id="container">
+          
+        <svg id="nycmap" width="1200" height="1000"></svg>
+        <!-- <div id="legendDiv">
+          <svg id="mapLegend"></svg>
+          <div id="slider"></div>
+        </div> -->
+      </div>
+    </center>
+  </div>
+
+  <!-- second square graph visualization -->
   <div>
     <!-- information for square graph -->
-    <div>
+    <div class="description">
       <center>
-        <h2>
-          <font color="black" size="4"><br><br><br><br><b>Where are the trees located in New York City? </b></font>
+        <h2 class="graphTitle">
+          <br><br><br><br><b>Do human activities affect the lives of street trees? </b>
         </h2>
+        <p class="graphContent">
+          The following two graphs aim to show (any potential) pattern between
+          neighborhood human activities and number of trees.
+          <br><br>The treemap on the left shows how many trees are
+          planted in each neighborhood and the most common trees there.
+          The scatter plot on the right shows
+          correlation between neighborhood population and number of trees.
+          <br><br> Hover over each rectangle of the treemap layout and each point
+          of the scatter plot to explore.
+
+        </p>
       </center>
     </div>
 
     <!-- square graph -->
-    <svg id="treemap" width="800" height="800"></svg>
+    <center>
+    <div style="margin-left:auto; margin-right:auto;">
+        <svg id="treemap" width="600" height="600"></svg>
 
-    <div style="display: inline-block;">
-      <!-- hover information square -->
-      <div style="display:inline-block; margin-left: 20px;">
-        <div style="width: 700px">
-          <p>The treemap on the left shows how many trees are
-            planted in each neighborhood. Each branch of the treemap is
-            given a rectangle standing for a borough, which is then tiled with
-            smaller rectangles representing neighborhoods. A leaf node's
-            rectangle has an area proportional to the number of trees,and the leaf nodes are colored to show different
-            neighborhoods.</p>
-        </div>
-        <p id="treemap">
-          <div style="background-color:lightgrey; height: 200px; width: 700px;">
-            <h4>Hover to see tree information!</h6>
-              <p><b>Borough: </b><span id="borough"></span></p>
-              <p><b>Neighborhood: </b><span id="name"></span></p>
-              <p><b>Trees Planted: </b><span id="planted"></span></p>
-              <p><b>Population Size: </b><span id="population"></span></p>
-              <p><b>Most Common Trees: </b><span id="common"></span></p>
-              <!-- <p><b>Least Common Trees: </b><span id="uncommon"></span></p> -->
+        <div style="display: inline-block;">
+          <!-- hover information square -->
+          <div >
+            <div style="width: 600px">
+              <p>Each branch of the treemap is
+                given a rectangle standing for a borough, which is then tiled with
+                smaller rectangles representing neighborhoods. A leaf node's
+                rectangle has an area proportional to the number of trees, and the
+                leaf nodes are colored to show different
+                neighborhoods.</p>
+            </div>
+            
+            <div style="background-color:lightgrey; height: 200px; width: 600px; padding-bottom: 20px">
+              <h4>Hover to see tree information!</h6>
+                <p><b>Borough: </b><span id="borough"></span></p>
+                <p><b>Neighborhood: </b><span id="name"></span></p>
+                <p><b>Trees Planted: </b><span id="planted"></span></p>
+                <p><b>Population Size: </b><span id="population"></span></p>
+                <p><b>Most Common Trees: </b><span id="common"></span></p>
+                <!-- <p><b>Least Common Trees: </b><span id="uncommon"></span></p> -->
+            </div>
+            
+    
+            <!-- neighborhood population graph (with title)-->
+            <!-- <div style="display:inline-block;"> -->
+              <p style="width:600px">Is neighborhood population related to number of trees?
+                Check this scatter plot! Don't forget to hover to see more.</p>
+              <svg id="population" height="400" width="600" font-family="sans-serif" font-size="10" style="background: #F5F5F5">
+              </svg>
+            <!-- </div> -->
           </div>
-        </p>
-
-        <!-- neighborhood population graph (with title)-->
-        <div style="display:inline-block;">
-          <p>Is neighborhood population related to number of trees?</p>
-          <svg id="population" height="400" width="600" font-family="sans-serif" font-size="10"
-            style="background: #F5F5F5">
-          </svg>
         </div>
-      </div>
     </div>
-  </div>
-  <div id="nyctreemap">
-    <center>
-      <h2>
-        <font color="black" size="4">
-          <br><br><br><br><b> Tree Census Visualization </b></font>
-      </h2>
-      <font color="black" size="2">
-        The following map shows the distribution of trees in
-        New York City. <br><br><br>
-      </font>
-    </center>
-    <center>
-      <div id="container">
-        <svg id="nycmap" width="900" height="1000"></svg>
-        <div id="legendDiv">
-          <svg id="mapLegend"></svg>
-          <div id="slider"></div>
-        </div>
-      </div>
-    </center>
+  </center>
+    
   </div>
 
 
 
-  <div id="treeType">
-    <center>
-      <h2>
-        <font color="black" size="4">
-          <br><br><br><br><b>What types of trees are the most popular? </b></font>
-      </h2>
-      <font color="black" size="2">
-        The following treemap shows the ranking of different types of trees in
-        New York City. Each branch of the treemap is given a rectangle standing
-        for a tree type. <br> A leaf node's
-        rectangle has an area proportional to the number of trees,
-        and the leaf nodes are colored to show different tree types. <br><br><br>
-      </font>
-    </center>
-    <center>
-      <div style="background-color:lightgrey; height: 100px; width: 800px;">
-        <h4>Hover to see tree information!</h6>
-          <p>Tree type: <span id="type"></span></p>
-          <p>Number of trees: <span id="number"></span></p>
-      </div>
-    </center>
-    <center><svg id="treeType" width="800" height="800"></svg></center>
-  </div>
+
   <div id="barchartContainer">
-    <center>
-      <h1>Tree Types Distribution in Five Boroughs</h1>
-      <svg id="barLegend"></svg>
-
-      <p>
-        Scroll Right for more data.
-      </p>
-    </center>
+    <div class="description">
+      <center>
+        <h2 class="graphTitle"><br><br><br>What tree types are the most popular in five boroughs? </h2>
+        <p class="graphContent">Good diversity of trees in a city is vital,
+          as otherwise disease or an insect can wipe out one particular species
+          of tree. Do the five boroughs in New York City have good diversity in terms
+          of street tree species?
+          <br><br>The following stacked bar chart shows how many trees of each
+          species are planted in five boroughs. </p>
+        <svg id="barLegend"></svg>
+        <p>
+          Scroll right for more information.
+        </p>
+      </center>
+    </div>
     <center>
       <div id="barDiv">
         <svg id="barchart"></svg>
@@ -154,16 +177,17 @@
   </div>
 
 
-  <p id="funFacts">
+  <p class="funFacts">
     <center>
-      <h2>
-        <font color="black" size="4">
-          <br><br><br><br><b>Fun Facts </b></font>
+      <h2 class="graphTitle">
+        <br><br><b>Fun Facts </b>
       </h2>
-      <font color="black" size="2">
-        <li>The top leafiest block in each borough are: Bronx, Brooklyn, Queens, Staten Island</li>
-        <li>There are 666,134 street trees on 131,488 blocks in New York City in 2015</li> <br><br><br>
-      </font>
+      <p class="graphContent">
+        <li>There are 666,134 street trees on 131,488 blocks in New York City in 2015.</li>
+        <li>The dataset identifies 132 different species of street trees citywide.</li>
+        <li>London planetree is the most prevalent species in New York City in 2015.
+          Honeylocust and Callery pear are the second and third popular tree species citywide. </li>
+        <li>The largest street tree in this dataset is an 87-inch diameter pin oak in Queens. </li>
     </center>
   </p>
 
@@ -280,49 +304,14 @@
           return testScale(d);
         })
 
-      var sliderDiv = d3.select("#slider").append("g");
       function changeColorScale(max) {
         treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, max]);
 
       }
-      changeColorScale(treeNumMinMax[1] / 5);
-
-      // var slider = d3
-      //               .sliderBottom()
-      //               .min(7)
-      //               .max(22186)
-      //               .width(300)
-      //               .tickFormat(d3.format(''))
-      //               .ticks(2)
-      //               .default(1)
-      //               .on('onchange', value => {
-      //                 changeColorScale(Number(this.value));
-      //                 tozoom.selectAll("g").remove()
-      //                 showTrees();
-      //               });
-      // sliderDiv.call(slider);
-      sliderDiv.append("input")
-        .attr("type", "range")
-        .attr("class", "slider")
-        .style("width", 200)
-        .attr("min", 0)
-        .attr("max", treeNumMinMax[1]).attr("step", 1)
-
-        .attr("value", treeNumMinMax[1] / 5)
-        .on("input", function () {
-          // console.log(this.value);
-
-          // svg.selectAll("circle").remove();
-          changeColorScale(Number(this.value));
-          tozoom.selectAll("g").remove()
-          showTrees();
-        })
-        .on('onchange', num => {
-          mapLegend.attr('fill', treeColorScale());
-          d3.select('p#value-color-picker').text(`#${num2hex(rgb)}`);
-        });
+      changeColorScale(treeNumMinMax[1] / 4);
 
       function showTrees() {
+        
         tozoom.append("g")
           .attr("class", "nyctreemap")
           .selectAll("path")
@@ -353,20 +342,45 @@
           })
           .attr("stroke-width", 0.5)
           .attr("stroke", "white")
+          .on("mouseover", function () { hoverinfo.style("display", null); })
+          .on("mouseout", function () { hoverinfo.style("display", "none"); })
+          .on("mousemove", function (d) {
+            var xPosition = d3.mouse(this)[0] - 15;
+            var yPosition = d3.mouse(this)[1] - 25;
+            var numTree = treeArray.find(function (n) {
+                return n.postcode == Number(d.properties.postalCode);
+              });
+            hoverinfo.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+            hoverinfo.select("text").text(
+              "Total Number of Trees: " + numTree.number
+            )
+
+          });
       }
       showTrees();
+      var hoverinfo = tozoom.append("g")
+        .attr("class", "hoverinfo")
+        .style("display", "none");
+        
+      hoverinfo.append("text")
+        .attr("x", 15)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr("font-size", "15px")
+        .attr("font-weight", "bold")
+        .attr("fill", "#facf5a")
       //////////////////// end of treemap///////////////////////////
       var entries = {
         "key": "nyc",
         "values": d3.nest()
           // .key(function(d) { return d['state']; })
-          .key(function (d) {
+          .key(function(d) {
             return d['borough'];
           })
-          .key(function (d) {
+          .key(function(d) {
             return d['nta_name'];
           })
-          .rollup(function (leaves) {
+          .rollup(function(leaves) {
             return leaves.length;
           })
           .entries(tree)
@@ -374,11 +388,11 @@
 
       var treeData = {
         "name": "nyc",
-        "children": entries.values.map(function (borough) {
+        "children": entries.values.map(function(borough) {
 
           return {
             "name": borough.key,
-            "children": borough.values.map(function (nta) {
+            "children": borough.values.map(function(nta) {
 
               return {
                 "name": nta.key,
@@ -395,10 +409,10 @@
         "key": "nyc",
         "values": d3.nest()
           // .key(function(d) { return d['state']; })
-          .key(function (d) {
+          .key(function(d) {
             return d['spc_common'];
           })
-          .rollup(function (leaves) {
+          .rollup(function(leaves) {
             return leaves.length;
           })
           .entries(tree)
@@ -406,7 +420,7 @@
 
       var typeTree = {
         "name": "nyc",
-        "children": type.values.map(function (spc) {
+        "children": type.values.map(function(spc) {
           return {
             "name": spc.key,
             "value": spc.value
@@ -417,19 +431,15 @@
 
       var typeRoot = d3.hierarchy(typeTree).sum(d => d.value);
 
-      var test = await d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_dendrogram_full.json");
       var root = d3.hierarchy(treeData)
-        .sum(function (d) {
+        .sum(function(d) {
 
           return d.value;
         })
 
       // .sort((a, b) => b.values - a.values)
 
-      var root2 = d3.hierarchy(test)
-        .sum(function (d) {
-          return d.value
-        });
+
       const ntaMinMax = d3.extent(root.leaves(), d => Number(d['value']));
       const typeMinMax = d3.extent(typeRoot.leaves(), d => Number(d['value']));
 
@@ -463,7 +473,7 @@
       nyc_pop.forEach((d, i) => {
         var zip = d.zip;
         var pop = d.irs_estimated_population_2015;
-        var hello = treeArray.find(function (n) {
+        var hello = treeArray.find(function(n) {
           return n.postcode == zip;
         })
         hello['pop'] = pop;
@@ -491,38 +501,38 @@
 
       //square treemap
       d3.treemap()
-        .size([800, 800])
+        .size([600, 600])
         .padding(2)
         (root)
       d3.select("svg#treemap").selectAll("rect")
         .data(root.leaves())
         .enter()
         .append("rect")
-        .attr('x', function (d) {
+        .attr('x', function(d) {
           return d.x0;
         })
-        .attr('y', function (d) {
+        .attr('y', function(d) {
           return d.y0;
         })
-        .attr('width', function (d) {
+        .attr('width', function(d) {
           return d.x1 - d.x0;
         })
-        .attr('height', function (d) {
+        .attr('height', function(d) {
           return d.y1 - d.y0;
         })
         .style("stroke", "black")
-        .style("fill", function (d) {
+        .style("fill", function(d) {
           return ntaColorScale(d.value)
         })
-        .attr("id", function (d) {
+        .attr("id", function(d) {
           return "szip_" + (d.data.name).replace(/\s+/g, '');
         })
-        .on("mouseover", function (d) {
+        .on("mouseover", function(d) {
           var boroughName = d.parent.data.name;
           var nName = d.data.name;
           var zip = name_zip[nName];
           // console.log(tree_and_pop);
-          var pop_node = tree_and_pop.find(function (n) {
+          var pop_node = tree_and_pop.find(function(n) {
             return n.postcode == zip;
           });
           if (pop_node) {
@@ -537,11 +547,15 @@
           d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
           boroughData = (tree.filter(d => d['nta_name'] === nName));
           var boroughByTree = d3.nest()
-            .key(function (d) { return d.spc_common; })
-            .rollup(function (v) { return v.length; })
+            .key(function(d) {
+              return d.spc_common;
+            })
+            .rollup(function(v) {
+              return v.length;
+            })
             .entries(boroughData);
 
-          var sorted = boroughByTree.sort(function (x, y) {
+          var sorted = boroughByTree.sort(function(x, y) {
             return d3.descending(x.value, y.value);
           });
           var common = sorted.slice(0, 3);
@@ -554,7 +568,7 @@
           // console.log(nName);
           mouseOnSquare(name_zip[nName]);
         })
-        .on("mouseout", function (d) {
+        .on("mouseout", function(d) {
           d3.select("#name").text("");
           d3.select("#planted").text("");
           d3.select("#common").text("");
@@ -572,13 +586,22 @@
       let svgPop = d3.select("svg#population");
       let widthPop = svgPop.attr("width");
       let heightPop = svgPop.attr("height");
-      let marginPop = { top: 10, right: 10, bottom: 35, left: 100 };
+      let marginPop = {
+        top: 10,
+        right: 10,
+        bottom: 35,
+        left: 100
+      };
 
       //max population
-      let maxPop = d3.max(tree_and_pop, function (d) { return Math.max(d['pop']) });
+      let maxPop = d3.max(tree_and_pop, function(d) {
+        return Math.max(d['pop'])
+      });
 
       //max number of trees
-      let maxTrees = d3.max(tree_and_pop, function (d) { return Math.max(d['number']) });
+      let maxTrees = d3.max(tree_and_pop, function(d) {
+        return Math.max(d['number'])
+      });
 
       //population scale
       let popScale = d3.scaleLinear().domain([0, maxPop]).range([marginPop.left, widthPop - 10]);
@@ -596,14 +619,14 @@
         .attr("transform", "translate(" + (marginPop.left - 30) + ", " + (marginPop.top - 5) + ")")
         .call(leftAxis);
 
-      tree_and_pop.forEach(function (d, i) {
+      tree_and_pop.forEach(function(d, i) {
         svgPop.append("circle")
           .attr("cx", popScale(d['pop']))
           .attr("cy", treeScale(d['number']) + marginPop.bottom + marginPop.top)
           .attr("r", 4)
           .style("fill", "green")
           .attr("id", "czip_" + d.postcode)
-          .on("mouseover", function () {
+          .on("mouseover", function() {
             d3.select(this)
               .style("stroke", "yellow")
               .style("stroke-width", 4)
@@ -620,11 +643,15 @@
             boroughData = (tree.filter(d => d['nta_name'] === thisName));
             console.log(boroughData);
             var boroughByTree = d3.nest()
-              .key(function (d) { return d.spc_common; })
-              .rollup(function (v) { return v.length; })
+              .key(function(d) {
+                return d.spc_common;
+              })
+              .rollup(function(v) {
+                return v.length;
+              })
               .entries(boroughData);
 
-            var sorted = boroughByTree.sort(function (x, y) {
+            var sorted = boroughByTree.sort(function(x, y) {
               return d3.descending(x.value, y.value);
             });
             var common = sorted.slice(0, 3);
@@ -632,7 +659,7 @@
 
             d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + ")");
           })
-          .on("mouseout", function (d) {
+          .on("mouseout", function(d) {
             d3.select(this)
               .style("fill", "green")
               .style("stroke-width", 0)
@@ -674,28 +701,28 @@
         .data(typeRoot.leaves())
         .enter()
         .append("rect")
-        .attr('x', function (d) {
+        .attr('x', function(d) {
           return d.x0;
         })
-        .attr('y', function (d) {
+        .attr('y', function(d) {
           return d.y0;
         })
-        .attr('width', function (d) {
+        .attr('width', function(d) {
           return d.x1 - d.x0;
         })
-        .attr('height', function (d) {
+        .attr('height', function(d) {
           return d.y1 - d.y0;
         })
         .style("stroke", "black")
-        .style("fill", function (d) {
+        .style("fill", function(d) {
           return typeColorScale(d.value)
         })
-        .on("mouseover", function (d) {
+        .on("mouseover", function(d) {
           d3.select("#type").text(d.data.name);
           d3.select("#number").text(d.data.value);
           d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
         })
-        .on("mouseout", function (d) {
+        .on("mouseout", function(d) {
           d3.select("#type").text("");
           d3.select("#number").text("");
           d3.select(this).style("stroke", "black").style("stroke-width", 1);
@@ -703,7 +730,12 @@
 
 
       const dataset = await d3.json("./typeByBorough.json");
-      var barMargin = { top: 20, right: 160, bottom: 200, left: 30 };
+      var barMargin = {
+        top: 20,
+        right: 160,
+        bottom: 200,
+        left: 30
+      };
       var width = 3000 - barMargin.left - barMargin.right,
         height = 800 - barMargin.top - barMargin.bottom;
       var boroughColors = ["#ffa600", "#003f5c", "#ff6361", "#58508d", "#bc5090"];
@@ -714,16 +746,18 @@
         .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
 
       var xScale = d3.scaleBand()
-        .domain(dataset[0].map(function (d) {
-          console.log(d);
-
+        .domain(dataset[0].map(function(d) {
           return d.x;
         }))
         .rangeRound([10, width - 10])
         .padding(0.02);
 
       var yScale = d3.scaleLinear()
-        .domain([0, d3.max(dataset, function (d) { return d3.max(d, function (d) { return d.y0 + d.y; }); })])
+        .domain([0, d3.max(dataset, function(d) {
+          return d3.max(d, function(d) {
+            return d.y0 + d.y;
+          });
+        })])
         .range([height, 0]);
 
 
@@ -733,7 +767,9 @@
 
         .ticks(5)
         .tickSize(-width, 0, 0)
-        .tickFormat(function (d) { return d });
+        .tickFormat(function(d) {
+          return d
+        });
 
       var xAxis = d3.axisBottom(xScale);
       //   .tickFormat(d3.time.format("%Y"));
@@ -752,7 +788,7 @@
         .attr("font-size", "15px")
         .attr("dx", "-.8em")
         .attr("dy", "5px")
-        .attr("transform", function (d) {
+        .attr("transform", function(d) {
           return "rotate(-90)"
         });
 
@@ -760,25 +796,37 @@
         .data(dataset)
         .enter().append("g")
         .attr("class", "barborough")
-        .style("fill", function (d, i) { return boroughColors[i]; })
+        .style("fill", function(d, i) {
+          return boroughColors[i];
+        })
         .style("stroke", "white")
 
 
       var rect = groups.selectAll("rect")
-        .data(function (d) { return d; })
+        .data(function(d) {
+          return d;
+        })
         .enter()
         .append("rect")
-        .attr("x", function (d, i) {
+        .attr("x", function(d, i) {
 
 
           return i * 20;
         })
-        .attr("y", function (d) { return yScale(d.y0 + d.y); })
-        .attr("height", function (d) { return yScale(d.y0) - yScale(d.y0 + d.y); })
+        .attr("y", function(d) {
+          return yScale(d.y0 + d.y);
+        })
+        .attr("height", function(d) {
+          return yScale(d.y0) - yScale(d.y0 + d.y);
+        })
         .attr("width", 20)
-        .on("mouseover", function () { tooltip.style("display", null); })
-        .on("mouseout", function () { tooltip.style("display", "none"); })
-        .on("mousemove", function (d) {
+        .on("mouseover", function() {
+          tooltip.style("display", null);
+        })
+        .on("mouseout", function() {
+          tooltip.style("display", "none");
+        })
+        .on("mousemove", function(d) {
           var xPosition = d3.mouse(this)[0] - 15;
           var yPosition = d3.mouse(this)[1] - 25;
           tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
@@ -796,13 +844,17 @@
         .enter()
         .append("g")
         .attr("class", "barlegend")
-        .attr("transform", function (d, i) { return "translate(" + (30 + i * 130) + ",10)"; });
+        .attr("transform", function(d, i) {
+          return "translate(" + (30 + i * 130) + ",10)";
+        });
 
       barLegend.append("rect")
         .attr("x", 10)
         .attr("width", 25)
         .attr("height", 25)
-        .style("fill", function (d, i) { return boroughColors.slice().reverse()[i]; });
+        .style("fill", function(d, i) {
+          return boroughColors.slice().reverse()[i];
+        });
 
       barLegend.append("text")
         .attr("x", 45)
@@ -811,13 +863,18 @@
         .style("text-anchor", "start")
         .style("font-size", "17px ")
 
-        .text(function (d, i) {
+        .text(function(d, i) {
           switch (i) {
-            case 0: return "Bronx";
-            case 1: return "Brooklyn";
-            case 2: return "Manhattan";
-            case 3: return "Queens";
-            case 4: return "Staten Island";
+            case 0:
+              return "Bronx";
+            case 1:
+              return "Brooklyn";
+            case 2:
+              return "Manhattan";
+            case 3:
+              return "Queens";
+            case 4:
+              return "Staten Island";
           }
         });
 
@@ -841,7 +898,7 @@
       //   .attr("font-weight", "bold")
 
       function cap(str) {
-        return str.toLowerCase().replace(/^\w|\s\w/g, function (letter) {
+        return str.toLowerCase().replace(/^\w|\s\w/g, function(letter) {
           return letter.toUpperCase();
         })
       }
