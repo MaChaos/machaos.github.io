@@ -318,6 +318,23 @@ body {
       var typeColorScale = d3.scaleSequential(d3.interpolateYlGn).domain([typeMinMax[0], typeMinMax[1] / 2]);
       var svg = d3.select("svg#treemap");
       var svg2 = d3.select("svg#treeType");
+
+      //function for square mouseovers
+      function mouseOnSquare(zip) {
+        console.log("in mouseOnSquare");
+        console.log(d3.select("czip_" + zip));
+        d3.select("#czip_" + zip)
+          .style("fill", "lightgreen")
+          .attr("r", 10);
+      }
+
+      function mouseOffSquare(zip) {
+        d3.select("#czip_" + zip)
+          .style("fill", "green")
+          .attr("r", 4);
+      }
+
+      //square treemap
       d3.treemap()
         .size([800, 800])
         .padding(2)
@@ -363,6 +380,10 @@ body {
 
           d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + "), ");
           // d3.select("#uncommon").text(uncommon[0].key + " (" + uncommon[0].value + "), " + uncommon[1].key + " (" + uncommon[1].value + "), " + uncommon[2].key + " (" + uncommon[2].value + "), ");
+
+          // console.log(name_zip['Park Slope-Gowanus']);
+          // console.log(nName);
+          mouseOnSquare(name_zip[nName]);
         })
         .on("mouseout", function(d) {
           d3.select("#name").text("");
@@ -371,18 +392,27 @@ body {
           // d3.select("#uncommon").text("");
           d3.select("#borough").text("");
           d3.select(this).style("stroke", "black").style("stroke-width", 1);
+          var nName = d.data.name;
+          mouseOffSquare(name_zip[nName]);
         });
         // search to get here BOI
-
 
         //Trees by Population Graph
 
         //array of all zip codes
         var all_zip = [];
+        //array of zip code:name
+        var zip_name = {};
+        //array of name:zip code
+        var name_zip = {};
         tree.forEach( (d, i) => {
           var zip = d.postcode
+          var name = d.nta_name
           if (!all_zip.includes(zip)) {
-            all_zip.push(zip)
+            all_zip.push(zip);
+            zip_name[zip] = name
+            name_zip[name] = zip
+            // name_zip.push({[name]:zip});
           }
         });
 
@@ -400,6 +430,7 @@ body {
           hello['pop'] = pop;
           tree_and_pop.push(hello);
         })
+
 
         //create svg data
         let svgPop = d3.select("svg#population");
@@ -436,14 +467,11 @@ body {
             .attr("cy", treeScale(d['number']) + marginPop.bottom + marginPop.top)
             .attr("r", 4)
             .style("fill", "green")
-
-
+            .attr("id", "czip_" + d.postcode)
             .on("mouseover", function() {
-                console.log(d.pop);
-                console.log(d.number);
-                d3.select(this)
-                .style("fill", "lightgreen")
-                .attr("r", 10);
+                // d3.select(this)
+                // .style("fill", "lightgreen")
+                // .attr("r", 10);
             })
             .on("mouseout", function(d) {
               d3.select(this)
@@ -471,28 +499,6 @@ body {
             .style("text-anchor", "middle")
             .text("Number of Trees");
 
-
-      // svg.selectAll("text")
-      //   .data(root.leaves())
-      //   .enter()
-      //   .append("text")
-      //   .attr("x", function(d) {
-      //     return d.x0 + 5
-      //   }) // +10 to adjust position (more right)
-      //   .attr("y", function(d) {
-      //     return d.y0 + 10
-      //   }) // +20 to adjust position (lower)
-      //   .text(function(d) {
-      //     return d.data.name + " \br " + d.value
-      //   })
-      //   .attr("font-size", "10px")
-      //   .attr("fill", function(d) {
-      //
-      //     if (d.value < (2000))
-      //       return "none";
-      //     else
-      //       return "#F8F8F8";
-      //   });
 
       // tree types map
       d3.treemap()
@@ -529,33 +535,6 @@ body {
           d3.select("#number").text("");
           d3.select(this).style("stroke", "black").style("stroke-width", 1);
         });
-
-      // svg2.selectAll("text")
-      //   .data(typeRoot.leaves())
-      //   .enter()
-      //   .append("text")
-      //   .attr("x", function(d) {
-      //     return d.x0 + 5
-      //   }) // +10 to adjust position (more right)
-      //   .attr("y", function(d) {
-      //     return d.y0 + 20
-      //   }) // +20 to adjust position (lower)
-      //   .text(function(d) {
-      //     return d.data.name + " \br " + d.value
-      //   })
-      //   .attr("font-size", "12px")
-      //   .attr("fill", function(d) {
-      //
-      //     if (d.value < (typeMinMax[1] / 2)) {
-      //       if (d.value < 100)
-      //         return "none";
-      //       else
-      //         return "black";
-      //     } else
-      //       return "#F8F8F8";
-      //   })
-
-
 
 
       const treeNumMinMax = d3.extent(treeArray, d => d['number']);
@@ -611,7 +590,6 @@ body {
         //             var num = cuisineAll.find(function(e) {
         //                 return e.zip == d.properties.postalCode;
         //             });
-        //             // console.log(num);
         //             if (num != undefined) {
         //                 return num.number + " " + " restaurants in " + " | " + num.zip;
         //             }
