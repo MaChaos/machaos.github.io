@@ -10,9 +10,9 @@
 
 </head>
 <style>
-body {
-  margin: 60px;
-}
+  body {
+    margin: 60px;
+  }
 </style>
 
 <body>
@@ -20,90 +20,66 @@ body {
   <p id="projectTitle">
     <center>
       <h1>
-        <font color="black" size="6">Tree Census in New York City</font>
+        Tree Census in New York City
       </h1>
     </center>
     <div style="margin-left:10px; line-height:13px;">
       <center>
-        <font color="black" size="3"><br>Our dataset contains information of
-          nearly every tree in New York City in 2015. You are going to explore
-          the distribution and some fun facts of the trees. <br></font>
+        Our dataset contains information of
+        nearly every tree in New York City in 2015. You are going to explore
+        the distribution and some fun facts of the trees.
       </center>
     </div>
   </p>
 
-<!-- first square graph visualization -->
-<div>
-  <!-- information for square graph -->
+  <!-- first square graph visualization -->
   <div>
-    <center><h2>
-      <font color="black" size="4"><br><br><br><br><b>Where are the trees located in New York City? </b></font>
-    </h2></center>
-  </div>
-
-  <!-- square graph -->
-  <svg id="treemap" width="800" height="800"></svg>
-
-<div style="display: inline-block;">
-<!-- hover information square -->
-<div style="display:inline-block; margin-left: 20px;">
-  <div style="width: 700px">
-    <p>The treemap on the left shows how many trees are
-    planted in each neighborhood. Each branch of the treemap is
-    given a rectangle standing for a borough, which is then tiled with
-    smaller rectangles representing neighborhoods. A leaf node's
-    rectangle has an area proportional to the number of trees,and the leaf nodes are colored to show different neighborhoods.</p>
-  </div>
-  <p id="treemap">
-    <div style="background-color:lightgrey; height: 200px; width: 700px;">
-      <h4>Hover to see tree information!</h6>
-      <p><b>Borough: </b><span id="borough"></span></p>
-      <p><b>Neighborhood: </b><span id="name"></span></p>
-      <p><b>Trees Planted: </b><span id="planted"></span></p>
-      <p><b>Population Size: </b><span id="population"></span></p>
-      <p><b>Most Common Trees: </b><span id="common"></span></p>
-      <!-- <p><b>Least Common Trees: </b><span id="uncommon"></span></p> -->
+    <!-- information for square graph -->
+    <div>
+      <center>
+        <h2>
+          <font color="black" size="4"><br><br><br><br><b>Where are the trees located in New York City? </b></font>
+        </h2>
+      </center>
     </div>
-  </p>
 
-<!-- neighborhood population graph (with title)-->
-  <div style="display:inline-block;">
-    <p>Is neighborhood population related to number of trees?</p>
-  <svg id="population" height="400" width="600" font-family="sans-serif" font-size="10" style="background: #F5F5F5">
-  </svg>
+    <!-- square graph -->
+    <svg id="treemap" width="800" height="800"></svg>
+
+    <div style="display: inline-block;">
+      <!-- hover information square -->
+      <div style="display:inline-block; margin-left: 20px;">
+        <div style="width: 700px">
+          <p>The treemap on the left shows how many trees are
+            planted in each neighborhood. Each branch of the treemap is
+            given a rectangle standing for a borough, which is then tiled with
+            smaller rectangles representing neighborhoods. A leaf node's
+            rectangle has an area proportional to the number of trees,and the leaf nodes are colored to show different
+            neighborhoods.</p>
+        </div>
+        <p id="treemap">
+          <div style="background-color:lightgrey; height: 200px; width: 700px;">
+            <h4>Hover to see tree information!</h6>
+              <p><b>Borough: </b><span id="borough"></span></p>
+              <p><b>Neighborhood: </b><span id="name"></span></p>
+              <p><b>Trees Planted: </b><span id="planted"></span></p>
+              <p><b>Population Size: </b><span id="population"></span></p>
+              <p><b>Most Common Trees: </b><span id="common"></span></p>
+              <!-- <p><b>Least Common Trees: </b><span id="uncommon"></span></p> -->
+          </div>
+        </p>
+
+        <!-- neighborhood population graph (with title)-->
+        <div style="display:inline-block;">
+          <p>Is neighborhood population related to number of trees?</p>
+          <svg id="population" height="400" width="600" font-family="sans-serif" font-size="10"
+            style="background: #F5F5F5">
+          </svg>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-</div>
-</div>
-
-
-
-
-  <p id="treeType">
-    <center>
-      <h2>
-        <font color="black" size="4">
-          <br><br><br><br><b>What types of trees are the most popular? </b></font>
-      </h2>
-      <font color="black" size="2">
-        The following treemap shows the ranking of different types of trees in
-        New York City. Each branch of the treemap is given a rectangle standing
-        for a tree type. <br> A leaf node's
-        rectangle has an area proportional to the number of trees,
-        and the leaf nodes are colored to show different tree types. <br><br><br>
-      </font>
-    </center>
-    <center><div style="background-color:lightgrey; height: 100px; width: 800px;">
-      <h4>Hover to see tree information!</h6>
-      <p>Tree type: <span id="type"></span></p>
-      <p>Number of trees: <span id="number"></span></p>
-    </div></center>
-    <center><svg id="treeType" width="800" height="800"></svg></center>
-  </p>
-  <p>
-    <center><svg id="piechart" width="800" height="800"></svg></center>
-  </p>
-  <p id="nycmap">
+  <div id="nyctreemap">
     <center>
       <h2>
         <font color="black" size="4">
@@ -123,24 +99,50 @@ body {
         </div>
       </div>
     </center>
-  </p>
-  <div id="barchartContainer">
-      <center>
-          <h1>Tree Types Distribution in Five Boroughs</h1>
-          <svg id="barLegend"></svg>
-
-          <p>
-              Scroll Right for more data.
-          </p>
-      </center>
-      <center>
-          <div id="barDiv">
-
-
-              <svg id="barchart"></svg>
-          </div>
-      </center>
   </div>
+
+
+
+  <div id="treeType">
+    <center>
+      <h2>
+        <font color="black" size="4">
+          <br><br><br><br><b>What types of trees are the most popular? </b></font>
+      </h2>
+      <font color="black" size="2">
+        The following treemap shows the ranking of different types of trees in
+        New York City. Each branch of the treemap is given a rectangle standing
+        for a tree type. <br> A leaf node's
+        rectangle has an area proportional to the number of trees,
+        and the leaf nodes are colored to show different tree types. <br><br><br>
+      </font>
+    </center>
+    <center>
+      <div style="background-color:lightgrey; height: 100px; width: 800px;">
+        <h4>Hover to see tree information!</h6>
+          <p>Tree type: <span id="type"></span></p>
+          <p>Number of trees: <span id="number"></span></p>
+      </div>
+    </center>
+    <center><svg id="treeType" width="800" height="800"></svg></center>
+  </div>
+  <div id="barchartContainer">
+    <center>
+      <h1>Tree Types Distribution in Five Boroughs</h1>
+      <svg id="barLegend"></svg>
+
+      <p>
+        Scroll Right for more data.
+      </p>
+    </center>
+    <center>
+      <div id="barDiv">
+        <svg id="barchart"></svg>
+      </div>
+    </center>
+  </div>
+
+
   <p id="funFacts">
     <center>
       <h2>
@@ -236,41 +238,43 @@ body {
       // console.log(ManhattanMinMax); // [7, 3696]
 
       var treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, treeNumMinMax[1] / 5]);
-      var testScale = d3.scaleSequential(d3.interpolateGreens).domain([0, 199/5]);
+      var testScale = d3.scaleSequential(d3.interpolateGreens).domain([0, 199 / 5]);
       var mapLegend = d3.select("#mapLegend")
 
-                        .attr("width", 200)
-                        .attr("height", 50)
-                        .append("g")
+        .attr("width", 200)
+        .attr("height", 50)
+        .append("g")
       var legendWidth = 200;
-      const barScale = d3.scaleLinear().domain([7,22186]).range([0,100]);
+      const barScale = d3.scaleLinear().domain([7, 22186]).range([0, 100]);
       const barAxis = d3.axisBottom().scale(barScale);
       mapLegend.append("g")
-                .attr("class", "axis")
-                .attr("transform","translate("+(20)+","+(55)+")")
-                .call(barAxis);
+        .attr("class", "axis")
+        .attr("transform", "translate(" + (20) + "," + (55) + ")")
+        .call(barAxis);
       mapLegend.selectAll(".legend")
-                .data(d3.range(legendWidth), function(d) { return d; })
-                .enter()
-                .append("rect")
-                .attr("class", "legend")
-                .attr("x", function(d, i) {
-                  // console.log(i);
+        .data(d3.range(legendWidth), function (d) { return d; })
+        .enter()
+        .append("rect")
+        .attr("class", "legend")
+        .attr("x", function (d, i) {
+          // console.log(i);
 
-                  return i; })
-                .attr("y", 0)
-                .attr("height", 50)
-                .attr("width", 1)
-                .style("fill", function(d, i ) {
+          return i;
+        })
+        .attr("y", 0)
+        .attr("height", 50)
+        .attr("width", 1)
+        .style("fill", function (d, i) {
 
-                  return testScale(d); })
+          return testScale(d);
+        })
 
       var sliderDiv = d3.select("#slider").append("g");
       function changeColorScale(max) {
         treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, max]);
 
       }
-      changeColorScale(treeNumMinMax[1]/5);
+      changeColorScale(treeNumMinMax[1] / 5);
 
       // var slider = d3
       //               .sliderBottom()
@@ -287,25 +291,25 @@ body {
       //               });
       // sliderDiv.call(slider);
       sliderDiv.append("input")
-              .attr("type", "range")
-              .attr("class", "slider")
-              .style("width", 200)
-              .attr("min", 0)
-              .attr("max", treeNumMinMax[1]).attr("step", 1)
+        .attr("type", "range")
+        .attr("class", "slider")
+        .style("width", 200)
+        .attr("min", 0)
+        .attr("max", treeNumMinMax[1]).attr("step", 1)
 
-              .attr("value", treeNumMinMax[1]/5)
-              .on("input", function() {
-                  // console.log(this.value);
+        .attr("value", treeNumMinMax[1] / 5)
+        .on("input", function () {
+          // console.log(this.value);
 
-                  // svg.selectAll("circle").remove();
-                  changeColorScale(Number(this.value));
-                  tozoom.selectAll("g").remove()
-                  showTrees();
-              })
-              .on('onchange', num => {
-                  mapLegend.attr('fill', treeColorScale());
-                  d3.select('p#value-color-picker').text(`#${num2hex(rgb)}`);
-                });
+          // svg.selectAll("circle").remove();
+          changeColorScale(Number(this.value));
+          tozoom.selectAll("g").remove()
+          showTrees();
+        })
+        .on('onchange', num => {
+          mapLegend.attr('fill', treeColorScale());
+          d3.select('p#value-color-picker').text(`#${num2hex(rgb)}`);
+        });
 
       function showTrees() {
         tozoom.append("g")
@@ -314,16 +318,16 @@ body {
           .data(zip.features)
           .enter().append("path")
           .attr("d", path)
-          .attr("id", function(d) {
+          .attr("id", function (d) {
             return "zip" + d.properties.postalCode;
           })
-          .attr("class", function(d) {
+          .attr("class", function (d) {
             return d.properties.borough.replace(/ +/g, "");
           })
-          .style("fill", function(d, i) {
+          .style("fill", function (d, i) {
             // console.log(d);
             // var id = d.properties.OBJECTID;
-            var num = treeArray.find(function(n) {
+            var num = treeArray.find(function (n) {
               return n.postcode == Number(d.properties.postalCode);
             });
             // console.log(num);
@@ -345,13 +349,13 @@ body {
         "key": "nyc",
         "values": d3.nest()
           // .key(function(d) { return d['state']; })
-          .key(function(d) {
+          .key(function (d) {
             return d['borough'];
           })
-          .key(function(d) {
+          .key(function (d) {
             return d['nta_name'];
           })
-          .rollup(function(leaves) {
+          .rollup(function (leaves) {
             return leaves.length;
           })
           .entries(tree)
@@ -359,11 +363,11 @@ body {
 
       var treeData = {
         "name": "nyc",
-        "children": entries.values.map(function(borough) {
+        "children": entries.values.map(function (borough) {
 
           return {
             "name": borough.key,
-            "children": borough.values.map(function(nta) {
+            "children": borough.values.map(function (nta) {
 
               return {
                 "name": nta.key,
@@ -380,10 +384,10 @@ body {
         "key": "nyc",
         "values": d3.nest()
           // .key(function(d) { return d['state']; })
-          .key(function(d) {
+          .key(function (d) {
             return d['spc_common'];
           })
-          .rollup(function(leaves) {
+          .rollup(function (leaves) {
             return leaves.length;
           })
           .entries(tree)
@@ -391,7 +395,7 @@ body {
 
       var typeTree = {
         "name": "nyc",
-        "children": type.values.map(function(spc) {
+        "children": type.values.map(function (spc) {
           return {
             "name": spc.key,
             "value": spc.value
@@ -404,7 +408,7 @@ body {
 
       var test = await d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_dendrogram_full.json");
       var root = d3.hierarchy(treeData)
-        .sum(function(d) {
+        .sum(function (d) {
 
           return d.value;
         })
@@ -412,7 +416,7 @@ body {
       // .sort((a, b) => b.values - a.values)
 
       var root2 = d3.hierarchy(test)
-        .sum(function(d) {
+        .sum(function (d) {
           return d.value
         });
       const ntaMinMax = d3.extent(root.leaves(), d => Number(d['value']));
@@ -429,7 +433,7 @@ body {
       var zip_name = {};
       //array of name:zip code
       var name_zip = {};
-      tree.forEach( (d, i) => {
+      tree.forEach((d, i) => {
         var zip = d.postcode
         var name = d.nta_name
         if (!all_zip.includes(zip)) {
@@ -445,10 +449,10 @@ body {
 
       //array of tree frequency and population data for all neighborhoods
       var tree_and_pop = [];
-      nyc_pop.forEach( (d, i) => {
+      nyc_pop.forEach((d, i) => {
         var zip = d.zip;
         var pop = d.irs_estimated_population_2015;
-        var hello = treeArray.find(function(n) {
+        var hello = treeArray.find(function (n) {
           return n.postcode == zip;
         })
         hello['pop'] = pop;
@@ -483,31 +487,31 @@ body {
         .data(root.leaves())
         .enter()
         .append("rect")
-        .attr('x', function(d) {
+        .attr('x', function (d) {
           return d.x0;
         })
-        .attr('y', function(d) {
+        .attr('y', function (d) {
           return d.y0;
         })
-        .attr('width', function(d) {
+        .attr('width', function (d) {
           return d.x1 - d.x0;
         })
-        .attr('height', function(d) {
+        .attr('height', function (d) {
           return d.y1 - d.y0;
         })
         .style("stroke", "black")
-        .style("fill", function(d) {
+        .style("fill", function (d) {
           return ntaColorScale(d.value)
         })
-        .attr("id", function(d) {
+        .attr("id", function (d) {
           return "szip_" + (d.data.name).replace(/\s+/g, '');
         })
-        .on("mouseover", function(d) {
+        .on("mouseover", function (d) {
           var boroughName = d.parent.data.name;
           var nName = d.data.name;
           var zip = name_zip[nName];
           // console.log(tree_and_pop);
-          var pop_node = tree_and_pop.find(function(n) {
+          var pop_node = tree_and_pop.find(function (n) {
             return n.postcode == zip;
           });
           if (pop_node) {
@@ -522,14 +526,14 @@ body {
           d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
           boroughData = (tree.filter(d => d['nta_name'] === nName));
           var boroughByTree = d3.nest()
-            .key(function(d) { return d.spc_common; })
-            .rollup(function(v) {return v.length;})
+            .key(function (d) { return d.spc_common; })
+            .rollup(function (v) { return v.length; })
             .entries(boroughData);
 
-          var sorted = boroughByTree.sort(function(x,y) {
+          var sorted = boroughByTree.sort(function (x, y) {
             return d3.descending(x.value, y.value);
           });
-          var common = sorted.slice(0,3);
+          var common = sorted.slice(0, 3);
           var uncommon = sorted.slice(-3);
 
           d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + ")");
@@ -539,7 +543,7 @@ body {
           // console.log(nName);
           mouseOnSquare(name_zip[nName]);
         })
-        .on("mouseout", function(d) {
+        .on("mouseout", function (d) {
           d3.select("#name").text("");
           d3.select("#planted").text("");
           d3.select("#common").text("");
@@ -551,103 +555,103 @@ body {
         });
 
 
-        //Trees by Population Graph
+      //Trees by Population Graph
 
-        //create svg data
-        let svgPop = d3.select("svg#population");
-        let widthPop = svgPop.attr("width");
-        let heightPop = svgPop .attr("height");
-        let marginPop = {top: 10, right: 10, bottom: 35, left: 100};
+      //create svg data
+      let svgPop = d3.select("svg#population");
+      let widthPop = svgPop.attr("width");
+      let heightPop = svgPop.attr("height");
+      let marginPop = { top: 10, right: 10, bottom: 35, left: 100 };
 
-        //max population
-        let maxPop = d3.max(tree_and_pop, function(d) {return Math.max(d['pop'])});
+      //max population
+      let maxPop = d3.max(tree_and_pop, function (d) { return Math.max(d['pop']) });
 
-        //max number of trees
-        let maxTrees = d3.max(tree_and_pop, function(d) {return Math.max(d['number'])});
+      //max number of trees
+      let maxTrees = d3.max(tree_and_pop, function (d) { return Math.max(d['number']) });
 
-        //population scale
-        let popScale = d3.scaleLinear().domain([0,maxPop]).range([marginPop.left, widthPop-10]);
+      //population scale
+      let popScale = d3.scaleLinear().domain([0, maxPop]).range([marginPop.left, widthPop - 10]);
 
-        //tree frequency scale
-        let treeScale = d3.scaleLinear().domain([0, maxTrees]).range([heightPop - (marginPop.top + marginPop.bottom), 0]);
+      //tree frequency scale
+      let treeScale = d3.scaleLinear().domain([0, maxTrees]).range([heightPop - (marginPop.top + marginPop.bottom), 0]);
 
-        bottomAxis = d3.axisBottom(popScale);
-        svgPop.append("g").attr("class", "x axis")
-          .attr("transform", "translate(0, "+(heightPop - marginPop.top - 30) +")")
-          .call(bottomAxis);
+      bottomAxis = d3.axisBottom(popScale);
+      svgPop.append("g").attr("class", "x axis")
+        .attr("transform", "translate(0, " + (heightPop - marginPop.top - 30) + ")")
+        .call(bottomAxis);
 
-        leftAxis = d3.axisLeft(treeScale);
-        svgPop.append("g").attr("class", "y axis")
-          .attr("transform", "translate("+(marginPop.left - 30)+", "+(marginPop.top - 5)+")")
-          .call(leftAxis);
+      leftAxis = d3.axisLeft(treeScale);
+      svgPop.append("g").attr("class", "y axis")
+        .attr("transform", "translate(" + (marginPop.left - 30) + ", " + (marginPop.top - 5) + ")")
+        .call(leftAxis);
 
-          tree_and_pop.forEach(function(d, i) {
-            svgPop.append("circle")
-            .attr("cx", popScale(d['pop']))
-            .attr("cy", treeScale(d['number']) + marginPop.bottom + marginPop.top)
-            .attr("r", 4)
-            .style("fill", "green")
-            .attr("id", "czip_" + d.postcode)
-            .on("mouseover", function() {
-                d3.select(this)
-                .style("stroke", "yellow")
-                .style("stroke-width", 4)
-                .attr("r", 10);
-                d3.select("#borough").text(d.borough);
-                d3.select("#name").text(zip_name[d.postcode]);
-                d3.select("#planted").text(d.number);
-                d3.select("#population").text(d.pop + " People");
-                // console.log(zip_name[d.postcode])
-                // console.log(tree.filter(d => d['nta_name'] == zip_name[d.postcode]));
-                var zip = d.postcode;
-                var thisName = zip_name[zip];
-                console.log(thisName);
-                boroughData = (tree.filter(d => d['nta_name'] === thisName));
-                console.log(boroughData);
-                var boroughByTree = d3.nest()
-                  .key(function(d) { return d.spc_common; })
-                  .rollup(function(v) {return v.length;})
-                  .entries(boroughData);
+      tree_and_pop.forEach(function (d, i) {
+        svgPop.append("circle")
+          .attr("cx", popScale(d['pop']))
+          .attr("cy", treeScale(d['number']) + marginPop.bottom + marginPop.top)
+          .attr("r", 4)
+          .style("fill", "green")
+          .attr("id", "czip_" + d.postcode)
+          .on("mouseover", function () {
+            d3.select(this)
+              .style("stroke", "yellow")
+              .style("stroke-width", 4)
+              .attr("r", 10);
+            d3.select("#borough").text(d.borough);
+            d3.select("#name").text(zip_name[d.postcode]);
+            d3.select("#planted").text(d.number);
+            d3.select("#population").text(d.pop + " People");
+            // console.log(zip_name[d.postcode])
+            // console.log(tree.filter(d => d['nta_name'] == zip_name[d.postcode]));
+            var zip = d.postcode;
+            var thisName = zip_name[zip];
+            console.log(thisName);
+            boroughData = (tree.filter(d => d['nta_name'] === thisName));
+            console.log(boroughData);
+            var boroughByTree = d3.nest()
+              .key(function (d) { return d.spc_common; })
+              .rollup(function (v) { return v.length; })
+              .entries(boroughData);
 
-                var sorted = boroughByTree.sort(function(x,y) {
-                  return d3.descending(x.value, y.value);
-                });
-                var common = sorted.slice(0,3);
-                var uncommon = sorted.slice(-3);
+            var sorted = boroughByTree.sort(function (x, y) {
+              return d3.descending(x.value, y.value);
+            });
+            var common = sorted.slice(0, 3);
+            var uncommon = sorted.slice(-3);
 
-                d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + ")");
-            })
-            .on("mouseout", function(d) {
-              d3.select(this)
-                .style("fill", "green")
-                .style("stroke-width", 0)
-                .attr("r", 4);
-                d3.select("#borough").text("");
-                d3.select("#name").text("");
-                d3.select("#planted").text("");
-                d3.select("#population").text("");
-                d3.select("#common").text("");
-            })
-            .attr("transform", "translate(0, "+(-40) +")");
-          });
+            d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + ")");
+          })
+          .on("mouseout", function (d) {
+            d3.select(this)
+              .style("fill", "green")
+              .style("stroke-width", 0)
+              .attr("r", 4);
+            d3.select("#borough").text("");
+            d3.select("#name").text("");
+            d3.select("#planted").text("");
+            d3.select("#population").text("");
+            d3.select("#common").text("");
+          })
+          .attr("transform", "translate(0, " + (-40) + ")");
+      });
 
-          //label for x axis
-          svgPop.append("text")
-            // .attr("transform", "translate(" + (widthPop/2) + " ," + (heightPop + marginPop.top + 20) + ")")
-            // .attr("transform", "translate(100)")
-            .attr("x", widthPop/2 + 20)
-            .attr("y", heightPop - 10)
-            .style("text-anchor", "middle")
-            .text("Population by Neighborhood");
+      //label for x axis
+      svgPop.append("text")
+        // .attr("transform", "translate(" + (widthPop/2) + " ," + (heightPop + marginPop.top + 20) + ")")
+        // .attr("transform", "translate(100)")
+        .attr("x", widthPop / 2 + 20)
+        .attr("y", heightPop - 10)
+        .style("text-anchor", "middle")
+        .text("Population by Neighborhood");
 
-          //label for y axis
-          svgPop.append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("x", -heightPop/2 + 20)
-            .attr("y", 10)
-            .attr("dy", "1em")
-            .style("text-anchor", "middle")
-            .text("Number of Trees");
+      //label for y axis
+      svgPop.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -heightPop / 2 + 20)
+        .attr("y", 10)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Number of Trees");
 
 
       // tree types map
@@ -659,175 +663,177 @@ body {
         .data(typeRoot.leaves())
         .enter()
         .append("rect")
-        .attr('x', function(d) {
+        .attr('x', function (d) {
           return d.x0;
         })
-        .attr('y', function(d) {
+        .attr('y', function (d) {
           return d.y0;
         })
-        .attr('width', function(d) {
+        .attr('width', function (d) {
           return d.x1 - d.x0;
         })
-        .attr('height', function(d) {
+        .attr('height', function (d) {
           return d.y1 - d.y0;
         })
         .style("stroke", "black")
-        .style("fill", function(d) {
+        .style("fill", function (d) {
           return typeColorScale(d.value)
         })
-        .on("mouseover", function(d) {
+        .on("mouseover", function (d) {
           d3.select("#type").text(d.data.name);
           d3.select("#number").text(d.data.value);
           d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
         })
-        .on("mouseout", function(d) {
+        .on("mouseout", function (d) {
           d3.select("#type").text("");
           d3.select("#number").text("");
           d3.select(this).style("stroke", "black").style("stroke-width", 1);
         });
 
 
-          const dataset = await d3.json("./typeByBorough.json");
-          var barMargin = {top: 20, right: 160, bottom: 200, left: 30};
-          var width = 3000 - barMargin.left - barMargin.right,
-              height = 800 - barMargin.top - barMargin.bottom;
-          var boroughColors = ["#ffa600", "#003f5c", "#ff6361", "#58508d", "#bc5090"];
-          var barsvg = d3.select("#barchart")
-            .attr("width", width + barMargin.left + barMargin.right)
-            .attr("height", height + barMargin.top + barMargin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
+      const dataset = await d3.json("./typeByBorough.json");
+      var barMargin = { top: 20, right: 160, bottom: 200, left: 30 };
+      var width = 3000 - barMargin.left - barMargin.right,
+        height = 800 - barMargin.top - barMargin.bottom;
+      var boroughColors = ["#ffa600", "#003f5c", "#ff6361", "#58508d", "#bc5090"];
+      var barsvg = d3.select("#barchart")
+        .attr("width", width + barMargin.left + barMargin.right)
+        .attr("height", height + barMargin.top + barMargin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
 
-          var xScale = d3.scaleBand()
-                          .domain(dataset[0].map(function(d) {
-                              console.log(d);
+      var xScale = d3.scaleBand()
+        .domain(dataset[0].map(function (d) {
+          console.log(d);
 
-                              return d.x; }))
-                          .rangeRound([10, width-10])
-                          .padding(0.02);
+          return d.x;
+        }))
+        .rangeRound([10, width - 10])
+        .padding(0.02);
 
-          var yScale = d3.scaleLinear()
-            .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
-            .range([height, 0]);
-
-
-
-          var yAxis = d3.axisLeft(yScale)
-
-
-            .ticks(5)
-            .tickSize(-width, 0, 0)
-            .tickFormat( function(d) { return d } );
-
-          var xAxis = d3.axisBottom(xScale);
-          //   .tickFormat(d3.time.format("%Y"));
-
-          barsvg.append("g")
-            .attr("class", "y axis")
-            .attr("transform", "translate(3 ,0)")
-            .call(yAxis);
-
-          barsvg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(-85 ," + height + ")")
-            .call(xAxis)
-            .selectAll("text")
-                      .style("text-anchor", "end")
-                      .attr("font-size", "15px")
-                      .attr("dx", "-.8em")
-                      .attr("dy", "5px")
-                      .attr("transform", function(d) {
-                          return "rotate(-90)"
-                          });
-
-          var groups = barsvg.selectAll("g.barborough")
-            .data(dataset)
-            .enter().append("g")
-            .attr("class", "barborough")
-            .style("fill", function(d, i) { return boroughColors[i]; })
-            .style("stroke", "white")
-
-
-          var rect = groups.selectAll("rect")
-            .data(function(d) { return d; })
-            .enter()
-            .append("rect")
-            .attr("x", function(d,i) {
-
-
-              return i*20; })
-            .attr("y", function(d) { return yScale(d.y0 + d.y); })
-            .attr("height", function(d) { return yScale(d.y0) - yScale(d.y0 + d.y); })
-            .attr("width", 20)
-            .on("mouseover", function() { tooltip.style("display", null); })
-            .on("mouseout", function() { tooltip.style("display", "none"); })
-            .on("mousemove", function(d) {
-              var xPosition = d3.mouse(this)[0] - 15;
-              var yPosition = d3.mouse(this)[1] - 25;
-              tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-              tooltip.select("text").text(d.y+" " + cap(d.x) + " planted")
-
-            });
+      var yScale = d3.scaleLinear()
+        .domain([0, d3.max(dataset, function (d) { return d3.max(d, function (d) { return d.y0 + d.y; }); })])
+        .range([height, 0]);
 
 
 
-          var barLegend = d3.select("#barLegend")
-            .attr("width", 750)
-            .attr("height", 50)
-            .selectAll(".barlegend")
-            .data(boroughColors)
-            .enter()
-            .append("g")
-            .attr("class", "barlegend")
-            .attr("transform", function(d, i) { return "translate(" + (30+i * 130) + ",10)"; });
-
-            barLegend.append("rect")
-            .attr("x", 10)
-            .attr("width", 25)
-            .attr("height", 25)
-            .style("fill", function(d, i) {return boroughColors.slice().reverse()[i];});
-
-            barLegend.append("text")
-            .attr("x", 45)
-            .attr("y", 9)
-            .attr("dy", ".6em")
-            .style("text-anchor", "start")
-            .style("font-size", "17px ")
-
-            .text(function(d, i) {
-              switch (i) {
-                case 0: return "Bronx";
-                case 1: return "Brooklyn";
-                case 2: return "Manhattan";
-                case 3: return "Queens";
-                case 4: return "Staten Island";
-              }
-            });
+      var yAxis = d3.axisLeft(yScale)
 
 
-          // Prep the tooltip bits, initial display is hidden
-          var tooltip = barsvg.append("g")
-            .attr("class", "tooltip")
-            .style("display", "none");
+        .ticks(5)
+        .tickSize(-width, 0, 0)
+        .tickFormat(function (d) { return d });
 
-          tooltip.append("rect")
-            .attr("width", 30)
-            .attr("height", 20)
-            .attr("fill", "white")
-            .style("opacity", 0.5);
+      var xAxis = d3.axisBottom(xScale);
+      //   .tickFormat(d3.time.format("%Y"));
 
-          tooltip.append("text")
-            .attr("x", 15)
-            .attr("dy", "1.2em")
-            .style("text-anchor", "middle")
-            .attr("font-size", "14px")
-          //   .attr("font-weight", "bold")
+      barsvg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(3 ,0)")
+        .call(yAxis);
 
-          function cap(str){
-      return str.toLowerCase().replace(/^\w|\s\w/g, function (letter) {
+      barsvg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(-85 ," + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("font-size", "15px")
+        .attr("dx", "-.8em")
+        .attr("dy", "5px")
+        .attr("transform", function (d) {
+          return "rotate(-90)"
+        });
+
+      var groups = barsvg.selectAll("g.barborough")
+        .data(dataset)
+        .enter().append("g")
+        .attr("class", "barborough")
+        .style("fill", function (d, i) { return boroughColors[i]; })
+        .style("stroke", "white")
+
+
+      var rect = groups.selectAll("rect")
+        .data(function (d) { return d; })
+        .enter()
+        .append("rect")
+        .attr("x", function (d, i) {
+
+
+          return i * 20;
+        })
+        .attr("y", function (d) { return yScale(d.y0 + d.y); })
+        .attr("height", function (d) { return yScale(d.y0) - yScale(d.y0 + d.y); })
+        .attr("width", 20)
+        .on("mouseover", function () { tooltip.style("display", null); })
+        .on("mouseout", function () { tooltip.style("display", "none"); })
+        .on("mousemove", function (d) {
+          var xPosition = d3.mouse(this)[0] - 15;
+          var yPosition = d3.mouse(this)[1] - 25;
+          tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+          tooltip.select("text").text(d.y + " " + cap(d.x) + " planted")
+
+        });
+
+
+
+      var barLegend = d3.select("#barLegend")
+        .attr("width", 750)
+        .attr("height", 50)
+        .selectAll(".barlegend")
+        .data(boroughColors)
+        .enter()
+        .append("g")
+        .attr("class", "barlegend")
+        .attr("transform", function (d, i) { return "translate(" + (30 + i * 130) + ",10)"; });
+
+      barLegend.append("rect")
+        .attr("x", 10)
+        .attr("width", 25)
+        .attr("height", 25)
+        .style("fill", function (d, i) { return boroughColors.slice().reverse()[i]; });
+
+      barLegend.append("text")
+        .attr("x", 45)
+        .attr("y", 9)
+        .attr("dy", ".6em")
+        .style("text-anchor", "start")
+        .style("font-size", "17px ")
+
+        .text(function (d, i) {
+          switch (i) {
+            case 0: return "Bronx";
+            case 1: return "Brooklyn";
+            case 2: return "Manhattan";
+            case 3: return "Queens";
+            case 4: return "Staten Island";
+          }
+        });
+
+
+      // Prep the tooltip bits, initial display is hidden
+      var tooltip = barsvg.append("g")
+        .attr("class", "tooltip")
+        .style("display", "none");
+
+      tooltip.append("rect")
+        .attr("width", 30)
+        .attr("height", 20)
+        .attr("fill", "white")
+        .style("opacity", 0.5);
+
+      tooltip.append("text")
+        .attr("x", 15)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr("font-size", "14px")
+      //   .attr("font-weight", "bold")
+
+      function cap(str) {
+        return str.toLowerCase().replace(/^\w|\s\w/g, function (letter) {
           return letter.toUpperCase();
-      })
-    }
+        })
+      }
 
     };
     requestData();
