@@ -542,7 +542,7 @@ body {
           var common = sorted.slice(0,3);
           var uncommon = sorted.slice(-3);
 
-          d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + "), ");
+          d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + ")");
           // d3.select("#uncommon").text(uncommon[0].key + " (" + uncommon[0].value + "), " + uncommon[1].key + " (" + uncommon[1].value + "), " + uncommon[2].key + " (" + uncommon[2].value + "), ");
 
           // console.log(name_zip['Park Slope-Gowanus']);
@@ -559,7 +559,7 @@ body {
           var nName = d.data.name;
           mouseOffSquare(name_zip[nName]);
         });
-        // search to get here BOI
+
 
         //Trees by Population Graph
 
@@ -607,6 +607,21 @@ body {
                 d3.select("#name").text(zip_name[d.postcode]);
                 d3.select("#planted").text(d.number);
                 d3.select("#population").text(d.pop + " People");
+                // console.log(zip_name[d.postcode])
+                // console.log(tree.filter(d => d['nta_name'] == zip_name[d.postcode]));
+                boroughData = (tree.filter(d => d['nta_name'] === zip_name[d.postcode]));
+                var boroughByTree = d3.nest()
+                  .key(function(d) { return d.spc_common; })
+                  .rollup(function(v) {return v.length;})
+                  .entries(boroughData);
+
+                var sorted = boroughByTree.sort(function(x,y) {
+                  return d3.descending(x.value, y.value);
+                });
+                var common = sorted.slice(0,3);
+                var uncommon = sorted.slice(-3);
+
+                d3.select("#common").text(common[0].key + " (" + common[0].value + "), " + common[1].key + " (" + common[1].value + "), " + common[2].key + " (" + common[2].value + ")");
             })
             .on("mouseout", function(d) {
               d3.select(this)
@@ -617,6 +632,7 @@ body {
                 d3.select("#name").text("");
                 d3.select("#planted").text("");
                 d3.select("#population").text("");
+                d3.select("#common").text("");
             })
             .attr("transform", "translate(0, "+(-40) +")");
           });
