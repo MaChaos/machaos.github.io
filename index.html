@@ -193,7 +193,7 @@ body {
       const zipTreeMax = d3.max(tree, d => Number(d['postcode']));
       const zipTreeMin = d3.min(tree, d => Number(d['postcode']));
       const treeMinMax = d3.extent(tree, d => Number(d['postcode']));
-      
+
       const treeArray = await d3.json("./treeArray.json");
       // var treeArray = [];
       // const treeMap = new Map();
@@ -223,7 +223,7 @@ body {
       var treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, treeNumMinMax[1] / 5]);
       var testScale = d3.scaleSequential(d3.interpolateGreens).domain([0, 199/5]);
       var mapLegend = d3.select("#mapLegend")
-                        
+
                         .attr("width", 200)
                         .attr("height", 50)
                         .append("g")
@@ -239,24 +239,24 @@ body {
                 .enter()
                 .append("rect")
                 .attr("class", "legend")
-                .attr("x", function(d, i) { 
+                .attr("x", function(d, i) {
                   // console.log(i);
-                  
+
                   return i; })
                 .attr("y", 0)
                 .attr("height", 50)
                 .attr("width", 1)
-                .style("fill", function(d, i ) { 
-                  
+                .style("fill", function(d, i ) {
+
                   return testScale(d); })
 
       var sliderDiv = d3.select("#slider").append("g");
       function changeColorScale(max) {
         treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, max]);
-        
+
       }
       changeColorScale(treeNumMinMax[1]/5);
-      
+
       // var slider = d3
       //               .sliderBottom()
       //               .min(7)
@@ -277,11 +277,11 @@ body {
               .style("width", 200)
               .attr("min", 0)
               .attr("max", treeNumMinMax[1]).attr("step", 1)
-              
+
               .attr("value", treeNumMinMax[1]/5)
               .on("input", function() {
                   // console.log(this.value);
-                  
+
                   // svg.selectAll("circle").remove();
                   changeColorScale(Number(this.value));
                   tozoom.selectAll("g").remove()
@@ -291,7 +291,7 @@ body {
                   mapLegend.attr('fill', treeColorScale());
                   d3.select('p#value-color-picker').text(`#${num2hex(rgb)}`);
                 });
-      
+
       function showTrees() {
         tozoom.append("g")
           .attr("class", "nyctreemap")
@@ -510,9 +510,20 @@ body {
         .on("mouseover", function(d) {
           var boroughName = d.parent.data.name;
           var nName = d.data.name;
+          var zip = name_zip[nName];
+          // console.log(tree_and_pop);
+          var pop_node = tree_and_pop.find(function(n) {
+            return n.postcode == zip;
+          });
+          if (pop_node) {
+            var pop = pop_node.pop
+          } else {
+            var pop = ""
+          }
           d3.select("#name").text(nName);
           d3.select("#planted").text(d.data.value);
           d3.select("#borough").text(boroughName);
+          d3.select("#population").text(pop);
           d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
           boroughData = (tree.filter(d => d['nta_name'] === nName));
           var boroughByTree = d3.nest()
@@ -588,7 +599,7 @@ body {
                 .attr("r", 10);
                 d3.select("#borough").text(d.borough);
                 d3.select("#name").text(zip_name[d.postcode]);
-                d3.select("#planted").text("");
+                d3.select("#planted").text(d.number);
                 d3.select("#population").text(d.pop + " People");
             })
             .on("mouseout", function(d) {
