@@ -435,10 +435,43 @@ body {
       var svg = d3.select("svg#treemap");
       var svg2 = d3.select("svg#treeType");
 
+      //array of all zip codes
+      var all_zip = [];
+      //array of zip code:name
+      var zip_name = {};
+      //array of name:zip code
+      var name_zip = {};
+      tree.forEach( (d, i) => {
+        var zip = d.postcode
+        var name = d.nta_name
+        if (!all_zip.includes(zip)) {
+          all_zip.push(zip);
+          zip_name[zip] = name;
+          name_zip[name] = zip;
+          // name_zip.push({[name]:zip});
+        }
+      });
+
+      console.log(zip_name["11374"]);
+      //array of just nyc zip codes
+      nyc_pop = pop.filter(d => all_zip.includes(d['zip']));
+
+      //array of tree frequency and population data for all neighborhoods
+      var tree_and_pop = [];
+      nyc_pop.forEach( (d, i) => {
+        var zip = d.zip;
+        var pop = d.irs_estimated_population_2015;
+        var hello = treeArray.find(function(n) {
+          return n.postcode == zip;
+        })
+        hello['pop'] = pop;
+        tree_and_pop.push(hello);
+      })
+
       //function for square mouseovers
       function mouseOnSquare(zip) {
-        console.log("in mouseOnSquare");
-        console.log(d3.select("czip_" + zip));
+        // console.log("in mouseOnSquare");
+        // console.log(d3.select("czip_" + zip));
         d3.select("#czip_" + zip)
           .style("fill", "lightgreen")
           .attr("r", 10);
@@ -514,39 +547,6 @@ body {
         // search to get here BOI
 
         //Trees by Population Graph
-
-        //array of all zip codes
-        var all_zip = [];
-        //array of zip code:name
-        var zip_name = {};
-        //array of name:zip code
-        var name_zip = {};
-        tree.forEach( (d, i) => {
-          var zip = d.postcode
-          var name = d.nta_name
-          if (!all_zip.includes(zip)) {
-            all_zip.push(zip);
-            zip_name[zip] = name
-            name_zip[name] = zip
-            // name_zip.push({[name]:zip});
-          }
-        });
-
-        //array of just nyc zip codes
-        nyc_pop = pop.filter(d => all_zip.includes(d['zip']));
-
-        //array of tree frequency and population data for all neighborhoods
-        var tree_and_pop = [];
-        nyc_pop.forEach( (d, i) => {
-          var zip = d.zip;
-          var pop = d.irs_estimated_population_2015;
-          var hello = treeArray.find(function(n) {
-            return n.postcode == zip;
-          })
-          hello['pop'] = pop;
-          tree_and_pop.push(hello);
-        })
-
 
         //create svg data
         let svgPop = d3.select("svg#population");
