@@ -128,14 +128,14 @@ body {
       <center>
           <h1>Tree Types Distribution in Five Boroughs</h1>
           <svg id="barLegend"></svg>
-          
+
           <p>
               Scroll Right for more data.
           </p>
       </center>
       <center>
           <div id="barDiv">
-          
+
 
               <svg id="barchart"></svg>
           </div>
@@ -599,7 +599,11 @@ body {
                 d3.select("#population").text(d.pop + " People");
                 // console.log(zip_name[d.postcode])
                 // console.log(tree.filter(d => d['nta_name'] == zip_name[d.postcode]));
-                boroughData = (tree.filter(d => d['nta_name'] === zip_name[d.postcode]));
+                var zip = d.postcode;
+                var thisName = zip_name[zip];
+                console.log(thisName);
+                boroughData = (tree.filter(d => d['nta_name'] === thisName));
+                console.log(boroughData);
                 var boroughByTree = d3.nest()
                   .key(function(d) { return d.spc_common; })
                   .rollup(function(v) {return v.length;})
@@ -695,9 +699,9 @@ body {
             .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
 
           var xScale = d3.scaleBand()
-                          .domain(dataset[0].map(function(d) { 
+                          .domain(dataset[0].map(function(d) {
                               console.log(d);
-                              
+
                               return d.x; }))
                           .rangeRound([10, width-10])
                           .padding(0.02);
@@ -709,8 +713,8 @@ body {
 
 
           var yAxis = d3.axisLeft(yScale)
-            
-            
+
+
             .ticks(5)
             .tickSize(-width, 0, 0)
             .tickFormat( function(d) { return d } );
@@ -727,13 +731,13 @@ body {
             .attr("class", "x axis")
             .attr("transform", "translate(-85 ," + height + ")")
             .call(xAxis)
-            .selectAll("text")	
+            .selectAll("text")
                       .style("text-anchor", "end")
                       .attr("font-size", "15px")
                       .attr("dx", "-.8em")
                       .attr("dy", "5px")
                       .attr("transform", function(d) {
-                          return "rotate(-90)" 
+                          return "rotate(-90)"
                           });
 
           var groups = barsvg.selectAll("g.barborough")
@@ -742,15 +746,15 @@ body {
             .attr("class", "barborough")
             .style("fill", function(d, i) { return boroughColors[i]; })
             .style("stroke", "white")
-            
+
 
           var rect = groups.selectAll("rect")
             .data(function(d) { return d; })
             .enter()
             .append("rect")
-            .attr("x", function(d,i) { 
+            .attr("x", function(d,i) {
 
-                
+
               return i*20; })
             .attr("y", function(d) { return yScale(d.y0 + d.y); })
             .attr("height", function(d) { return yScale(d.y0) - yScale(d.y0 + d.y); })
@@ -762,7 +766,7 @@ body {
               var yPosition = d3.mouse(this)[1] - 25;
               tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
               tooltip.select("text").text(d.y+" " + cap(d.x) + " planted")
-              
+
             });
 
 
@@ -776,21 +780,21 @@ body {
             .append("g")
             .attr("class", "barlegend")
             .attr("transform", function(d, i) { return "translate(" + (30+i * 130) + ",10)"; });
-          
+
             barLegend.append("rect")
             .attr("x", 10)
             .attr("width", 25)
             .attr("height", 25)
             .style("fill", function(d, i) {return boroughColors.slice().reverse()[i];});
-          
+
             barLegend.append("text")
             .attr("x", 45)
             .attr("y", 9)
             .attr("dy", ".6em")
             .style("text-anchor", "start")
             .style("font-size", "17px ")
-            
-            .text(function(d, i) { 
+
+            .text(function(d, i) {
               switch (i) {
                 case 0: return "Bronx";
                 case 1: return "Brooklyn";
@@ -805,7 +809,7 @@ body {
           var tooltip = barsvg.append("g")
             .attr("class", "tooltip")
             .style("display", "none");
-              
+
           tooltip.append("rect")
             .attr("width", 30)
             .attr("height", 20)
