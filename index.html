@@ -16,8 +16,6 @@ body {
 </style>
 
 <body>
-  <!-- <div id="container"></div> -->
-  <!-- <div id="title"> Distribution of 85 Cuisine Types of Restaurants in NYC</div> -->
 
   <p id="projectTitle">
     <center>
@@ -34,7 +32,7 @@ body {
     </div>
   </p>
 
-<!-- first square graph visualization (recomment this to second visual) -->
+<!-- first square graph visualization -->
 <div>
   <!-- information for square graph -->
   <div>
@@ -472,15 +470,19 @@ body {
         // console.log("in mouseOnSquare");
         // console.log(d3.select("czip_" + zip));
         d3.select("#czip_" + zip)
-          .style("fill", "lightgreen")
+          // .style("fill", "lightgreen")
+          .style("stroke", "yellow")
+          .style("stroke-width", 4)
           .attr("r", 10);
       }
 
       function mouseOffSquare(zip) {
         d3.select("#czip_" + zip)
           .style("fill", "green")
+          .style("stroke-width", 0)
           .attr("r", 4);
       }
+
 
       //square treemap
       d3.treemap()
@@ -507,6 +509,9 @@ body {
         .style("fill", function(d) {
           return ntaColorScale(d.value)
         })
+        .attr("id", function(d) {
+          return "szip_" + (d.data.name).replace(/\s+/g, '');
+        })
         .on("mouseover", function(d) {
           var boroughName = d.parent.data.name;
           var nName = d.data.name;
@@ -523,7 +528,7 @@ body {
           d3.select("#name").text(nName);
           d3.select("#planted").text(d.data.value);
           d3.select("#borough").text(boroughName);
-          d3.select("#population").text(pop);
+          d3.select("#population").text(pop + " People");
           d3.select(this).style("stroke", "yellow").style("stroke-width", 4);
           boroughData = (tree.filter(d => d['nta_name'] === nName));
           var boroughByTree = d3.nest()
@@ -595,7 +600,8 @@ body {
             .attr("id", "czip_" + d.postcode)
             .on("mouseover", function() {
                 d3.select(this)
-                .style("fill", "lightgreen")
+                .style("stroke", "yellow")
+                .style("stroke-width", 4)
                 .attr("r", 10);
                 d3.select("#borough").text(d.borough);
                 d3.select("#name").text(zip_name[d.postcode]);
@@ -605,6 +611,7 @@ body {
             .on("mouseout", function(d) {
               d3.select(this)
                 .style("fill", "green")
+                .style("stroke-width", 0)
                 .attr("r", 4);
                 d3.select("#borough").text("");
                 d3.select("#name").text("");
