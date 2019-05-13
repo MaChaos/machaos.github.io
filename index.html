@@ -119,6 +119,10 @@ body {
     <center>
       <div id="container">
         <svg id="nycmap" width="900" height="1000"></svg>
+        <div id="legendDiv">
+          <svg id="mapLegend"></svg>
+          <div id="slider"></div>
+        </div>
       </div>
     </center>
   </p>
@@ -189,27 +193,139 @@ body {
       const zipTreeMax = d3.max(tree, d => Number(d['postcode']));
       const zipTreeMin = d3.min(tree, d => Number(d['postcode']));
       const treeMinMax = d3.extent(tree, d => Number(d['postcode']));
+      
+      const treeArray = await d3.json("./treeArray.json");
+      // var treeArray = [];
+      // const treeMap = new Map();
+      // tree.forEach((d, i) => {
+      //   var postcode = d['postcode'];
+      //   if (!treeMap.has(postcode)) {
+      //     treeMap.set(postcode, true);
 
-      var treeArray = [];
-      const treeMap = new Map();
-      tree.forEach((d, i) => {
-        var postcode = d['postcode'];
-        if (!treeMap.has(postcode)) {
-          treeMap.set(postcode, true);
+      //     treeArray.push({
+      //       postcode: postcode,
+      //       borough: d['borough'],
+      //       number: 1
+      //     })
+      //     // cuisine.push(cui);
+      //   } else if (treeMap.has(postcode)) {
+      //     treeArray.find(function(e) {
+      //       return e.postcode == postcode;
+      //     }).number++;
+      //   }
+      // });
+      //////////////////////// treemap //////////////////////
+      const treeNumMinMax = [7, 22186];
+      const ManhattanMinMax = [7, 3696];
+      // console.log(treeNumMinMax); // [7, 22186]
+      // console.log(ManhattanMinMax); // [7, 3696]
 
-          treeArray.push({
-            postcode: postcode,
-            borough: d['borough'],
-            number: 1
+      var treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, treeNumMinMax[1] / 5]);
+      var testScale = d3.scaleSequential(d3.interpolateGreens).domain([0, 199/5]);
+      var mapLegend = d3.select("#mapLegend")
+                        
+                        .attr("width", 200)
+                        .attr("height", 50)
+                        .append("g")
+      var legendWidth = 200;
+      const barScale = d3.scaleLinear().domain([7,22186]).range([0,100]);
+      const barAxis = d3.axisBottom().scale(barScale);
+      mapLegend.append("g")
+                .attr("class", "axis")
+                .attr("transform","translate("+(20)+","+(55)+")")
+                .call(barAxis);
+      mapLegend.selectAll(".legend")
+                .data(d3.range(legendWidth), function(d) { return d; })
+                .enter()
+                .append("rect")
+                .attr("class", "legend")
+                .attr("x", function(d, i) { 
+                  // console.log(i);
+                  
+                  return i; })
+                .attr("y", 0)
+                .attr("height", 50)
+                .attr("width", 1)
+                .style("fill", function(d, i ) { 
+                  
+                  return testScale(d); })
+
+      var sliderDiv = d3.select("#slider").append("g");
+      function changeColorScale(max) {
+        treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, max]);
+        
+      }
+      changeColorScale(treeNumMinMax[1]/5);
+      
+      // var slider = d3
+      //               .sliderBottom()
+      //               .min(7)
+      //               .max(22186)
+      //               .width(300)
+      //               .tickFormat(d3.format(''))
+      //               .ticks(2)
+      //               .default(1)
+      //               .on('onchange', value => {
+      //                 changeColorScale(Number(this.value));
+      //                 tozoom.selectAll("g").remove()
+      //                 showTrees();
+      //               });
+      // sliderDiv.call(slider);
+      sliderDiv.append("input")
+              .attr("type", "range")
+              .attr("class", "slider")
+              .style("width", 200)
+              .attr("min", 0)
+              .attr("max", treeNumMinMax[1]).attr("step", 1)
+              
+              .attr("value", treeNumMinMax[1]/5)
+              .on("input", function() {
+                  // console.log(this.value);
+                  
+                  // svg.selectAll("circle").remove();
+                  changeColorScale(Number(this.value));
+                  tozoom.selectAll("g").remove()
+                  showTrees();
+              })
+              .on('onchange', num => {
+                  mapLegend.attr('fill', treeColorScale());
+                  d3.select('p#value-color-picker').text(`#${num2hex(rgb)}`);
+                });
+      
+      function showTrees() {
+        tozoom.append("g")
+          .attr("class", "nyctreemap")
+          .selectAll("path")
+          .data(zip.features)
+          .enter().append("path")
+          .attr("d", path)
+          .attr("id", function(d) {
+            return "zip" + d.properties.postalCode;
           })
-          // cuisine.push(cui);
-        } else if (treeMap.has(postcode)) {
-          treeArray.find(function(e) {
-            return e.postcode == postcode;
-          }).number++;
-        }
-      });
-
+          .attr("class", function(d) {
+            return d.properties.borough.replace(/ +/g, "");
+          })
+          .style("fill", function(d, i) {
+            // console.log(d);
+            // var id = d.properties.OBJECTID;
+            var num = treeArray.find(function(n) {
+              return n.postcode == Number(d.properties.postalCode);
+            });
+            // console.log(num);
+            if (num != undefined) {
+              return treeColorScale(num.number);
+              // return fillMap(num);
+            } else if (num == 0)
+              return "grey"
+            else if (num == undefined)
+              return "grey";
+            // return scale(i);
+          })
+          .attr("stroke-width", 0.5)
+          .attr("stroke", "white")
+      }
+      showTrees();
+      //////////////////// end of treemap///////////////////////////
       var entries = {
         "key": "nyc",
         "values": d3.nest()
@@ -537,92 +653,12 @@ body {
         });
 
 
-      const treeNumMinMax = d3.extent(treeArray, d => d['number']);
-      const ManhattanMinMax = d3.extent(treeArray, function(d) {
-        if (d['borough'] == "Manhattan") {
-          return d['number'];
-        }
-      })
-
-      var treeColorScale = d3.scaleSequential(d3.interpolateGreens).domain([7, treeNumMinMax[1] / 5]);
-
-      function showTrees() {
-        // drawLegend(maxAll, scaleAll);
-        tozoom.append("g")
-          .attr("id", "nyctreemap")
-          .selectAll("path")
-          .data(zip.features)
-          .enter().append("path")
-          .attr("d", path)
-          .attr("id", function(d, i) {
-            return "poly" + i;
-          })
-          .style("fill", function(d, i) {
-
-            // var id = d.properties.OBJECTID;
-            var num = treeArray.find(function(n) {
-              return n.postcode == Number(d.properties.postalCode);
-            });
-
-            if (num != undefined) {
-              return treeColorScale(num.number);
-            } else if (num == 0)
-              return "grey"
-            else if (num == undefined)
-              return "grey";
-            // return scale(i);
-          })
-          .attr("stroke-width", 0.5)
-          .attr("stroke", "white")
-        // .on("mouseover", function(d,i) {
-        //     d3.select("#zipPopOver")
-        //         .transition()
-        //         .style("opacity", 1)
-        //         // .style("left", "650px")
-        //         // .style("top", "130px")
-        //         .text(function(){
-        //             // var num = cuisine.find(function(e) {
-        //             // return e.cuisine == cuisineObj.cuisine
-        //             // })
-        //             //         .area.find(function(n) {
-        //             //             return n.zip == d.properties.postalCode;
-        //             //         });
-        //             var num = cuisineAll.find(function(e) {
-        //                 return e.zip == d.properties.postalCode;
-        //             });
-        //             if (num != undefined) {
-        //                 return num.number + " " + " restaurants in " + " | " + num.zip;
-        //             }
-        //             else if (num == undefined)
-        //                 return "0 "+ " restaurant in "  + " | " + d.properties.postalCode;
-        //     })
-        // })
-        // .on("mouseout", function(){
-        //     d3.select("#zipPopOver")
-        //             .style("opacity", 0)
-        // })
-
-      }
-      showTrees();
-
-
-
-
-      // cuisine = cuisine.sort();
-      function compare(a, b) {
-        // Use toUpperCase() to ignore character casing
-        const genreA = a.cuisine.toUpperCase();
-        const genreB = b.cuisine.toUpperCase();
-
-        let comparison = 0;
-        if (genreA > genreB) {
-          comparison = 1;
-        } else if (genreA < genreB) {
-          comparison = -1;
-        }
-        return comparison;
-      }
-
+      // const treeNumMinMax = d3.extent(treeArray, d => d['number']);
+      // const ManhattanMinMax = d3.extent(treeArray, function(d) {
+      //   if (d['borough'] == "Manhattan") {
+      //     return d['number'];
+      //   }
+      // })
 
 
 
