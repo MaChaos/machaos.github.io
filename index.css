@@ -2,7 +2,24 @@ body {
       background-color: #f8f8f8;
       font-family: Montserrat, Helvetica, sans-serif;
     }
-
+    .axis path,
+    .axis line {
+      fill: white;
+      stroke: #000;
+    }
+   
+    path.domain {
+      stroke: none;
+    }
+   
+    .y .tick line {
+      stroke: #ddd;
+    }
+    #barDiv {
+        max-width: 1000px;
+        width: 1000px;
+        overflow-x: scroll;
+    }
     #title {
       background-color: #f8f8f8;
       /* Black background color */

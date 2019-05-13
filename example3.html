@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+  <style type="text/css">
+  svg {
+    shape-rendering: crispEdges;
+  }
+
+  .axis path,
+  .axis line {
+    fill: white;
+    stroke: #000;
+  }
+ 
+  path.domain {
+    stroke: none;
+  }
+ 
+  .y .tick line {
+    stroke: #ddd;
+  }
+  #barDiv {
+      max-width: 1000px;
+      width: 1000px;
+      overflow-x: scroll;
+  }
+  </style>
+
+</head>
+<body>
+    <div id="barchartContainer">
+        <center>
+            <h1>Tree Types Distribution in Five Boroughs</h1>
+            <svg id="barLegend"></svg>
+            
+            <p>
+                Scroll Right for more data.
+            </p>
+        </center>
+        <center>
+            <div id="barDiv">
+            
+
+                <svg id="barchart"></svg>
+            </div>
+        </center>
+    </div>
+    
+    
+    
+<script type="text/javascript">
+const requestData = async () => {
+const dataset = await d3.json("./typeByBorough.json");
+var barMargin = {top: 20, right: 160, bottom: 200, left: 30};
+var width = 3000 - barMargin.left - barMargin.right,
+    height = 800 - barMargin.top - barMargin.bottom;
+var boroughColors = ["#ffa600", "#003f5c", "#ff6361", "#58508d", "#bc5090"];
+var barsvg = d3.select("#barchart")
+  .attr("width", width + barMargin.left + barMargin.right)
+  .attr("height", height + barMargin.top + barMargin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
+
+var xScale = d3.scaleBand()
+                .domain(dataset[0].map(function(d) { 
+                    console.log(d);
+                    
+                    return d.x; }))
+                .rangeRound([10, width-10])
+                .padding(0.02);
+
+var yScale = d3.scaleLinear()
+  .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
+  .range([height, 0]);
+
+
+
+var yAxis = d3.axisLeft(yScale)
+  
+  
+  .ticks(5)
+  .tickSize(-width, 0, 0)
+  .tickFormat( function(d) { return d } );
+
+var xAxis = d3.axisBottom(xScale);
+//   .tickFormat(d3.time.format("%Y"));
+
+barsvg.append("g")
+  .attr("class", "y axis")
+  .attr("transform", "translate(3 ,0)")
+  .call(yAxis);
+
+barsvg.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(-85 ," + height + ")")
+  .call(xAxis)
+  .selectAll("text")	
+            .style("text-anchor", "end")
+            .attr("font-size", "15px")
+            .attr("dx", "-.8em")
+            .attr("dy", "5px")
+            .attr("transform", function(d) {
+                return "rotate(-90)" 
+                });
+
+var groups = barsvg.selectAll("g.barborough")
+  .data(dataset)
+  .enter().append("g")
+  .attr("class", "barborough")
+  .style("fill", function(d, i) { return boroughColors[i]; })
+  .style("stroke", "white")
+  
+
+var rect = groups.selectAll("rect")
+  .data(function(d) { return d; })
+  .enter()
+  .append("rect")
+  .attr("x", function(d,i) { 
+
+      
+    return i*20; })
+  .attr("y", function(d) { return yScale(d.y0 + d.y); })
+  .attr("height", function(d) { return yScale(d.y0) - yScale(d.y0 + d.y); })
+  .attr("width", 20)
+  .on("mouseover", function() { tooltip.style("display", null); })
+  .on("mouseout", function() { tooltip.style("display", "none"); })
+  .on("mousemove", function(d) {
+    var xPosition = d3.mouse(this)[0] - 15;
+    var yPosition = d3.mouse(this)[1] - 25;
+    tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+    tooltip.select("text").text(d.y+" " + cap(d.x) + " planted")
+    
+  });
+
+
+
+var barLegend = d3.select("#barLegend")
+  .attr("width", 750)
+  .attr("height", 50)
+  .selectAll(".barlegend")
+  .data(boroughColors)
+  .enter()
+  .append("g")
+  .attr("class", "barlegend")
+  .attr("transform", function(d, i) { return "translate(" + (30+i * 130) + ",10)"; });
+ 
+  barLegend.append("rect")
+  .attr("x", 10)
+  .attr("width", 25)
+  .attr("height", 25)
+  .style("fill", function(d, i) {return boroughColors.slice().reverse()[i];});
+ 
+  barLegend.append("text")
+  .attr("x", 45)
+  .attr("y", 9)
+  .attr("dy", ".6em")
+  .style("text-anchor", "start")
+  .style("font-size", "17px ")
+  
+  .text(function(d, i) { 
+    switch (i) {
+      case 0: return "Bronx";
+      case 1: return "Brooklyn";
+      case 2: return "Manhattan";
+      case 3: return "Queens";
+      case 4: return "Staten Island";
+    }
+  });
+
+
+// Prep the tooltip bits, initial display is hidden
+var tooltip = barsvg.append("g")
+  .attr("class", "tooltip")
+  .style("display", "none");
+    
+tooltip.append("rect")
+  .attr("width", 30)
+  .attr("height", 20)
+  .attr("fill", "white")
+  .style("opacity", 0.5);
+
+tooltip.append("text")
+  .attr("x", 15)
+  .attr("dy", "1.2em")
+  .style("text-anchor", "middle")
+  .attr("font-size", "15px")
+//   .attr("font-weight", "bold")
+
+function cap(str){
+      return str.toLowerCase().replace(/^\w|\s\w/g, function (letter) {
+          return letter.toUpperCase();
+      })
+    }
+};
+requestData();
+
+</script>
+</body>
+</html>

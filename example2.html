@@ -23,10 +23,30 @@
   .y .tick line {
     stroke: #ddd;
   }
+  #barDiv {
+      max-width: 1000px;
+      width: 1000px;
+      overflow-x: scroll;
+  }
   </style>
 
 </head>
 <body>
+    <center>
+        <svg id="barLegend"></svg>
+        <p>
+            Scroll Right for more data.
+        </p>
+    </center>
+    <center>
+        <div id="barDiv">
+        
+
+            <svg id="barchart"></svg>
+        </div>
+    </center>
+    
+    
 <script type="text/javascript">
 
 // Setup svg using Bostock's margin convention
@@ -36,8 +56,7 @@ var margin = {top: 20, right: 160, bottom: 200, left: 30};
 var width = 3000 - margin.left - margin.right,
     height = 800 - margin.top - margin.bottom;
 
-var svg = d3.select("body")
-  .append("svg")
+var svg = d3.select("#barchart")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -46,57 +65,18 @@ var svg = d3.select("body")
 
 /* Data in strings like it would be if imported from a csv */
 
-var data = [
-  { year: "2006", redDelicious: "10", mcintosh: "15", oranges: "9", pears: "6" },
-  { year: "2007", redDelicious: "12", mcintosh: "18", oranges: "9", pears: "4" },
-  { year: "2008", redDelicious: "05", mcintosh: "20", oranges: "8", pears: "2" },
-  { year: "2009", redDelicious: "01", mcintosh: "15", oranges: "5", pears: "4" },
-  { year: "2010", redDelicious: "02", mcintosh: "10", oranges: "4", pears: "2" },
-  { year: "2011", redDelicious: "03", mcintosh: "12", oranges: "6", pears: "3" },
-  { year: "2012", redDelicious: "04", mcintosh: "15", oranges: "8", pears: "1" },
-  { year: "2013", redDelicious: "06", mcintosh: "11", oranges: "9", pears: "4" },
-  { year: "2014", redDelicious: "10", mcintosh: "13", oranges: "9", pears: "5" },
-  { year: "2015", redDelicious: "16", mcintosh: "19", oranges: "6", pears: "9" },
-  { year: "2016", redDelicious: "19", mcintosh: "17", oranges: "5", pears: "7" },
-];
-
-var parse = d3.time.format("%Y").parse;
 
 
-// Transpose the data into layers
-var dataset = d3.layout.stack()(["redDelicious", "mcintosh", "oranges", "pears"].map(function(fruit,i) {
-  return data.map(function(d,j) {
-      console.log(fruit);
-      console.log(i);
-      console.log(j);
-      
-      
-      console.log(d);
-      console.log(d[fruit]);
-      
-    return {x: parse(d.year), y: +d[fruit]};
-  });
-}));
-console.log(dataset);
 var data2 = {"key":"nyc","values":[{"key":"red maple","values":[{"key":"Bronx","value":2198},{"key":"Brooklyn","value":2384},{"key":"Manhattan","value":356},{"key":"Queens","value":4935},{"key":"Staten Island","value":7373}]},{"key":"pin oak","values":[{"key":"Bronx","value":6445},{"key":"Brooklyn","value":12343},{"key":"Manhattan","value":4584},{"key":"Queens","value":22610},{"key":"Staten Island","value":7203}]},{"key":"honeylocust","values":[{"key":"Bronx","value":9691},{"key":"Brooklyn","value":16921},{"key":"Manhattan","value":13176},{"key":"Queens","value":20290},{"key":"Staten Island","value":4186}]},{"key":"American linden","values":[{"key":"Bronx","value":2132},{"key":"Brooklyn","value":4023},{"key":"Manhattan","value":1583},{"key":"Queens","value":4769},{"key":"Staten Island","value":1023}]},{"key":"London planetree","values":[{"key":"Bronx","value":7511},{"key":"Brooklyn","value":34886},{"key":"Manhattan","value":4122},{"key":"Queens","value":31111},{"key":"Staten Island","value":9384}]},{"key":"ginkgo","values":[{"key":"Bronx","value":2685},{"key":"Brooklyn","value":5595},{"key":"Manhattan","value":5859},{"key":"Queens","value":5971},{"key":"Staten Island","value":914}]},{"key":"willow oak","values":[{"key":"Bronx","value":505},{"key":"Brooklyn","value":802},{"key":"Manhattan","value":889},{"key":"Queens","value":730},{"key":"Staten Island","value":258}]},{"key":"sycamore maple","values":[{"key":"Bronx","value":247},{"key":"Brooklyn","value":544},{"key":"Manhattan","value":23},{"key":"Queens","value":1603},{"key":"Staten Island","value":314}]},{"key":"Amur maple","values":[{"key":"Bronx","value":431},{"key":"Brooklyn","value":263},{"key":"Manhattan","value":30},{"key":"Queens","value":671},{"key":"Staten Island","value":654}]},{"key":"","values":[{"key":"Bronx","value":4619},{"key":"Brooklyn","value":7549},{"key":"Manhattan","value":2995},{"key":"Queens","value":12581},{"key":"Staten Island","value":3875}]},{"key":"hedge maple","values":[{"key":"Bronx","value":798},{"key":"Brooklyn","value":578},{"key":"Manhattan","value":23},{"key":"Queens","value":675},{"key":"Staten Island","value":476}]},{"key":"American elm","values":[{"key":"Bronx","value":1471},{"key":"Brooklyn","value":2587},{"key":"Manhattan","value":1698},{"key":"Queens","value":1709},{"key":"Staten Island","value":510}]},{"key":"ash","values":[{"key":"Bronx","value":289},{"key":"Brooklyn","value":369},{"key":"Manhattan","value":58},{"key":"Queens","value":1324},{"key":"Staten Island","value":569}]},{"key":"crab apple","values":[{"key":"Bronx","value":507},{"key":"Brooklyn","value":626},{"key":"Manhattan","value":437},{"key":"Queens","value":1404},{"key":"Staten Island","value":553}]},{"key":"silver maple","values":[{"key":"Bronx","value":662},{"key":"Brooklyn","value":1375},{"key":"Manhattan","value":71},{"key":"Queens","value":6116},{"key":"Staten Island","value":4053}]},{"key":"Turkish hazelnut","values":[{"key":"Bronx","value":54},{"key":"Brooklyn","value":93},{"key":"Manhattan","value":17},{"key":"Queens","value":136},{"key":"Staten Island","value":17}]},{"key":"black cherry","values":[{"key":"Bronx","value":64},{"key":"Brooklyn","value":152},{"key":"Manhattan","value":32},{"key":"Queens","value":269},{"key":"Staten Island","value":90}]},{"key":"eastern redcedar","values":[{"key":"Bronx","value":158},{"key":"Brooklyn","value":290},{"key":"Manhattan","value":42},{"key":"Queens","value":532},{"key":"Staten Island","value":79}]},{"key":"Norway maple","values":[{"key":"Bronx","value":3376},{"key":"Brooklyn","value":6989},{"key":"Manhattan","value":290},{"key":"Queens","value":19407},{"key":"Staten Island","value":4127}]},{"key":"tulip-poplar","values":[{"key":"Bronx","value":62},{"key":"Brooklyn","value":275},{"key":"Manhattan","value":34},{"key":"Queens","value":489},{"key":"Staten Island","value":216}]},{"key":"sawtooth oak","values":[{"key":"Bronx","value":363},{"key":"Brooklyn","value":785},{"key":"Manhattan","value":353},{"key":"Queens","value":579},{"key":"Staten Island","value":164}]},{"key":"swamp white oak","values":[{"key":"Bronx","value":826},{"key":"Brooklyn","value":2714},{"key":"Manhattan","value":681},{"key":"Queens","value":1584},{"key":"Staten Island","value":793}]},{"key":"Sophora","values":[{"key":"Bronx","value":2555},{"key":"Brooklyn","value":5989},{"key":"Manhattan","value":4453},{"key":"Queens","value":5386},{"key":"Staten Island","value":955}]},{"key":"Chinese fringetree","values":[{"key":"Bronx","value":31},{"key":"Brooklyn","value":53},{"key":"Manhattan","value":9},{"key":"Queens","value":93},{"key":"Staten Island","value":48}]},{"key":"southern magnolia","values":[{"key":"Bronx","value":19},{"key":"Brooklyn","value":27},{"key":"Manhattan","value":19},{"key":"Queens","value":48},{"key":"Staten Island","value":19}]},{"key":"sweetgum","values":[{"key":"Bronx","value":904},{"key":"Brooklyn","value":2027},{"key":"Manhattan","value":227},{"key":"Queens","value":2489},{"key":"Staten Island","value":5010}]},{"key":"Callery pear","values":[{"key":"Bronx","value":4947},{"key":"Brooklyn","value":9081},{"key":"Manhattan","value":7297},{"key":"Queens","value":16547},{"key":"Staten Island","value":21059}]},{"key":"scarlet oak","values":[{"key":"Bronx","value":302},{"key":"Brooklyn","value":720},{"key":"Manhattan","value":71},{"key":"Queens","value":276},{"key":"Staten Island","value":96}]},{"key":"Atlantic white cedar","values":[{"key":"Bronx","value":53},{"key":"Brooklyn","value":95},{"key":"Manhattan","value":12},{"key":"Queens","value":133},{"key":"Staten Island","value":62}]},{"key":"black oak","values":[{"key":"Bronx","value":224},{"key":"Brooklyn","value":441},{"key":"Manhattan","value":192},{"key":"Queens","value":372},{"key":"Staten Island","value":98}]},{"key":"Japanese zelkova","values":[{"key":"Bronx","value":4638},{"key":"Brooklyn","value":9659},{"key":"Manhattan","value":3596},{"key":"Queens","value":8987},{"key":"Staten Island","value":2378}]},{"key":"white oak","values":[{"key":"Bronx","value":203},{"key":"Brooklyn","value":503},{"key":"Manhattan","value":241},{"key":"Queens","value":507},{"key":"Staten Island","value":232}]},{"key":"Ohio buckeye","values":[{"key":"Bronx","value":6},{"key":"Brooklyn","value":21},{"key":"Manhattan","value":24},{"key":"Queens","value":19},{"key":"Staten Island","value":5}]},{"key":"northern red oak","values":[{"key":"Bronx","value":1483},{"key":"Brooklyn","value":2468},{"key":"Manhattan","value":1143},{"key":"Queens","value":2697},{"key":"Staten Island","value":609}]},{"key":"silver linden","values":[{"key":"Bronx","value":670},{"key":"Brooklyn","value":2373},{"key":"Manhattan","value":541},{"key":"Queens","value":4146},{"key":"Staten Island","value":265}]},{"key":"pignut hickory","values":[{"key":"Bronx","value":7},{"key":"Brooklyn","value":16},{"key":"Manhattan","value":1},{"key":"Queens","value":54},{"key":"Staten Island","value":21}]},{"key":"Kentucky yellowwood","values":[{"key":"Bronx","value":88},{"key":"Brooklyn","value":124},{"key":"Manhattan","value":18},{"key":"Queens","value":187},{"key":"Staten Island","value":62}]},{"key":"mulberry","values":[{"key":"Bronx","value":155},{"key":"Brooklyn","value":206},{"key":"Manhattan","value":68},{"key":"Queens","value":581},{"key":"Staten Island","value":147}]},{"key":"Douglas-fir","values":[{"key":"Bronx","value":8},{"key":"Brooklyn","value":30},{"key":"Manhattan","value":2},{"key":"Queens","value":37},{"key":"Staten Island","value":8}]},{"key":"crepe myrtle","values":[{"key":"Bronx","value":45},{"key":"Brooklyn","value":65},{"key":"Manhattan","value":5},{"key":"Queens","value":240},{"key":"Staten Island","value":87}]},{"key":"sassafras","values":[{"key":"Bronx","value":16},{"key":"Brooklyn","value":41},{"key":"Manhattan","value":17},{"key":"Queens","value":73},{"key":"Staten Island","value":24}]},{"key":"cherry","values":[{"key":"Bronx","value":4092},{"key":"Brooklyn","value":5706},{"key":"Manhattan","value":869},{"key":"Queens","value":13497},{"key":"Staten Island","value":5115}]},{"key":"spruce","values":[{"key":"Bronx","value":9},{"key":"Brooklyn","value":32},{"key":"Manhattan","value":1},{"key":"Queens","value":126},{"key":"Staten Island","value":34}]},{"key":"Chinese elm","values":[{"key":"Bronx","value":1321},{"key":"Brooklyn","value":1593},{"key":"Manhattan","value":785},{"key":"Queens","value":1020},{"key":"Staten Island","value":626}]},{"key":"horse chestnut","values":[{"key":"Bronx","value":102},{"key":"Brooklyn","value":223},{"key":"Manhattan","value":11},{"key":"Queens","value":574},{"key":"Staten Island","value":186}]},{"key":"holly","values":[{"key":"Bronx","value":11},{"key":"Brooklyn","value":35},{"key":"Manhattan","value":26},{"key":"Queens","value":50},{"key":"Staten Island","value":16}]},{"key":"littleleaf linden","values":[{"key":"Bronx","value":3917},{"key":"Brooklyn","value":8903},{"key":"Manhattan","value":3333},{"key":"Queens","value":11902},{"key":"Staten Island","value":1687}]},{"key":"white pine","values":[{"key":"Bronx","value":17},{"key":"Brooklyn","value":37},{"key":"Manhattan","value":1},{"key":"Queens","value":100},{"key":"Staten Island","value":47}]},{"key":"blackgum","values":[{"key":"Bronx","value":28},{"key":"Brooklyn","value":123},{"key":"Manhattan","value":9},{"key":"Queens","value":76},{"key":"Staten Island","value":52}]},{"key":"Japanese tree lilac","values":[{"key":"Bronx","value":579},{"key":"Brooklyn","value":1005},{"key":"Manhattan","value":129},{"key":"Queens","value":1964},{"key":"Staten Island","value":891}]},{"key":"hardy rubber tree","values":[{"key":"Bronx","value":101},{"key":"Brooklyn","value":377},{"key":"Manhattan","value":66},{"key":"Queens","value":278},{"key":"Staten Island","value":93}]},{"key":"green ash","values":[{"key":"Bronx","value":1889},{"key":"Brooklyn","value":3808},{"key":"Manhattan","value":770},{"key":"Queens","value":7389},{"key":"Staten Island","value":2395}]},{"key":"English oak","values":[{"key":"Bronx","value":223},{"key":"Brooklyn","value":559},{"key":"Manhattan","value":197},{"key":"Queens","value":461},{"key":"Staten Island","value":204}]},{"key":"white ash","values":[{"key":"Bronx","value":174},{"key":"Brooklyn","value":342},{"key":"Manhattan","value":50},{"key":"Queens","value":400},{"key":"Staten Island","value":155}]},{"key":"golden raintree","values":[{"key":"Bronx","value":518},{"key":"Brooklyn","value":941},{"key":"Manhattan","value":359},{"key":"Queens","value":1304},{"key":"Staten Island","value":597}]},{"key":"Schumard's oak","values":[{"key":"Bronx","value":261},{"key":"Brooklyn","value":582},{"key":"Manhattan","value":137},{"key":"Queens","value":225},{"key":"Staten Island","value":282}]},{"key":"Siberian elm","values":[{"key":"Bronx","value":392},{"key":"Brooklyn","value":507},{"key":"Manhattan","value":156},{"key":"Queens","value":340},{"key":"Staten Island","value":200}]},{"key":"black walnut","values":[{"key":"Bronx","value":43},{"key":"Brooklyn","value":82},{"key":"Manhattan","value":33},{"key":"Queens","value":91},{"key":"Staten Island","value":46}]},{"key":"weeping willow","values":[{"key":"Bronx","value":27},{"key":"Brooklyn","value":55},{"key":"Manhattan","value":12},{"key":"Queens","value":133},{"key":"Staten Island","value":55}]},{"key":"katsura tree","values":[{"key":"Bronx","value":145},{"key":"Brooklyn","value":265},{"key":"Manhattan","value":38},{"key":"Queens","value":364},{"key":"Staten Island","value":99}]},{"key":"black locust","values":[{"key":"Bronx","value":354},{"key":"Brooklyn","value":441},{"key":"Manhattan","value":259},{"key":"Queens","value":490},{"key":"Staten Island","value":240}]},{"key":"Persian ironwood","values":[{"key":"Bronx","value":29},{"key":"Brooklyn","value":67},{"key":"Manhattan","value":1},{"key":"Queens","value":157},{"key":"Staten Island","value":23}]},{"key":"Cornelian cherry","values":[{"key":"Bronx","value":170},{"key":"Brooklyn","value":251},{"key":"Manhattan","value":27},{"key":"Queens","value":327},{"key":"Staten Island","value":291}]},{"key":"Chinese chestnut","values":[{"key":"Bronx","value":19},{"key":"Brooklyn","value":54},{"key":"Manhattan","value":17},{"key":"Queens","value":59},{"key":"Staten Island","value":24}]},{"key":"southern red oak","values":[{"key":"Bronx","value":11},{"key":"Brooklyn","value":20},{"key":"Manhattan","value":7},{"key":"Queens","value":27},{"key":"Staten Island","value":18}]},{"key":"purple-leaf plum","values":[{"key":"Bronx","value":774},{"key":"Brooklyn","value":1198},{"key":"Manhattan","value":110},{"key":"Queens","value":3035},{"key":"Staten Island","value":1762}]},{"key":"crimson king maple","values":[{"key":"Bronx","value":195},{"key":"Brooklyn","value":999},{"key":"Manhattan","value":6},{"key":"Queens","value":2903},{"key":"Staten Island","value":1820}]},{"key":"Kentucky coffeetree","values":[{"key":"Bronx","value":452},{"key":"Brooklyn","value":1176},{"key":"Manhattan","value":348},{"key":"Queens","value":1036},{"key":"Staten Island","value":352}]},{"key":"Japanese snowbell","values":[{"key":"Bronx","value":55},{"key":"Brooklyn","value":88},{"key":"Manhattan","value":15},{"key":"Queens","value":198},{"key":"Staten Island","value":36}]},{"key":"sugar maple","values":[{"key":"Bronx","value":362},{"key":"Brooklyn","value":603},{"key":"Manhattan","value":48},{"key":"Queens","value":1282},{"key":"Staten Island","value":549}]},{"key":"arborvitae","values":[{"key":"Bronx","value":26},{"key":"Brooklyn","value":68},{"key":"Manhattan","value":5},{"key":"Queens","value":175},{"key":"Staten Island","value":54}]},{"key":"Oklahoma redbud","values":[{"key":"Bronx","value":47},{"key":"Brooklyn","value":51},{"key":"Manhattan","value":9},{"key":"Queens","value":82},{"key":"Staten Island","value":30}]},{"key":"tree of heaven","values":[{"key":"Bronx","value":82},{"key":"Brooklyn","value":235},{"key":"Manhattan","value":104},{"key":"Queens","value":271},{"key":"Staten Island","value":64}]},{"key":"Chinese tree lilac","values":[{"key":"Bronx","value":53},{"key":"Brooklyn","value":91},{"key":"Manhattan","value":8},{"key":"Queens","value":204},{"key":"Staten Island","value":106}]},{"key":"American hornbeam","values":[{"key":"Bronx","value":295},{"key":"Brooklyn","value":343},{"key":"Manhattan","value":85},{"key":"Queens","value":525},{"key":"Staten Island","value":269}]},{"key":"eastern cottonwood","values":[{"key":"Bronx","value":56},{"key":"Brooklyn","value":40},{"key":"Manhattan","value":10},{"key":"Queens","value":106},{"key":"Staten Island","value":64}]},{"key":"eastern hemlock","values":[{"key":"Bronx","value":7},{"key":"Brooklyn","value":33},{"key":"Manhattan","value":7},{"key":"Queens","value":25},{"key":"Staten Island","value":16}]},{"key":"silver birch","values":[{"key":"Bronx","value":42},{"key":"Brooklyn","value":114},{"key":"Manhattan","value":10},{"key":"Queens","value":84},{"key":"Staten Island","value":50}]},{"key":"Atlas cedar","values":[{"key":"Bronx","value":6},{"key":"Brooklyn","value":34},{"key":"Queens","value":39},{"key":"Staten Island","value":8}]},{"key":"empress tree","values":[{"key":"Bronx","value":57},{"key":"Brooklyn","value":36},{"key":"Manhattan","value":17},{"key":"Queens","value":94},{"key":"Staten Island","value":41}]},{"key":"hawthorn","values":[{"key":"Bronx","value":472},{"key":"Brooklyn","value":593},{"key":"Manhattan","value":219},{"key":"Queens","value":1058},{"key":"Staten Island","value":646}]},{"key":"'Schubert' chokecherry","values":[{"key":"Bronx","value":575},{"key":"Brooklyn","value":1308},{"key":"Manhattan","value":163},{"key":"Queens","value":2013},{"key":"Staten Island","value":829}]},{"key":"catalpa","values":[{"key":"Bronx","value":133},{"key":"Brooklyn","value":73},{"key":"Manhattan","value":13},{"key":"Queens","value":307},{"key":"Staten Island","value":25}]},{"key":"river birch","values":[{"key":"Bronx","value":55},{"key":"Brooklyn","value":116},{"key":"Manhattan","value":27},{"key":"Queens","value":208},{"key":"Staten Island","value":159}]},{"key":"boxelder","values":[{"key":"Bronx","value":17},{"key":"Brooklyn","value":14},{"key":"Manhattan","value":2},{"key":"Queens","value":15},{"key":"Staten Island","value":16}]},{"key":"European beech","values":[{"key":"Bronx","value":14},{"key":"Brooklyn","value":42},{"key":"Manhattan","value":6},{"key":"Queens","value":51},{"key":"Staten Island","value":12}]},{"key":"Norway spruce","values":[{"key":"Bronx","value":43},{"key":"Brooklyn","value":67},{"key":"Manhattan","value":3},{"key":"Queens","value":191},{"key":"Staten Island","value":51}]},{"key":"Himalayan cedar","values":[{"key":"Bronx","value":1},{"key":"Brooklyn","value":14},{"key":"Manhattan","value":6},{"key":"Queens","value":30},{"key":"Staten Island","value":21}]},{"key":"Amur cork tree","values":[{"key":"Bronx","value":32},{"key":"Brooklyn","value":46},{"key":"Manhattan","value":8},{"key":"Queens","value":71},{"key":"Staten Island","value":26}]},{"key":"Japanese maple","values":[{"key":"Bronx","value":85},{"key":"Brooklyn","value":114},{"key":"Manhattan","value":11},{"key":"Queens","value":760},{"key":"Staten Island","value":160}]},{"key":"shingle oak","values":[{"key":"Bronx","value":177},{"key":"Brooklyn","value":277},{"key":"Manhattan","value":205},{"key":"Queens","value":333},{"key":"Staten Island","value":57}]},{"key":"magnolia","values":[{"key":"Bronx","value":62},{"key":"Brooklyn","value":83},{"key":"Manhattan","value":116},{"key":"Queens","value":317},{"key":"Staten Island","value":121}]},{"key":"smoketree","values":[{"key":"Bronx","value":3},{"key":"Brooklyn","value":10},{"key":"Manhattan","value":1},{"key":"Queens","value":42},{"key":"Staten Island","value":2}]},{"key":"paper birch","values":[{"key":"Bronx","value":62},{"key":"Brooklyn","value":134},{"key":"Manhattan","value":47},{"key":"Queens","value":170},{"key":"Staten Island","value":122}]},{"key":"American beech","values":[{"key":"Bronx","value":31},{"key":"Brooklyn","value":83},{"key":"Manhattan","value":22},{"key":"Queens","value":88},{"key":"Staten Island","value":49}]},{"key":"American hophornbeam","values":[{"key":"Bronx","value":185},{"key":"Brooklyn","value":366},{"key":"Manhattan","value":84},{"key":"Queens","value":295},{"key":"Staten Island","value":151}]},{"key":"American larch","values":[{"key":"Bronx","value":12},{"key":"Brooklyn","value":8},{"key":"Manhattan","value":7},{"key":"Queens","value":10},{"key":"Staten Island","value":9}]},{"key":"pond cypress","values":[{"key":"Bronx","value":30},{"key":"Brooklyn","value":102},{"key":"Manhattan","value":12},{"key":"Queens","value":30},{"key":"Staten Island","value":7}]},{"key":"cockspur hawthorn","values":[{"key":"Bronx","value":56},{"key":"Brooklyn","value":72},{"key":"Manhattan","value":3},{"key":"Queens","value":120},{"key":"Staten Island","value":90}]},{"key":"dawn redwood","values":[{"key":"Bronx","value":396},{"key":"Brooklyn","value":1130},{"key":"Manhattan","value":199},{"key":"Queens","value":874},{"key":"Staten Island","value":421}]},{"key":"common hackberry","values":[{"key":"Bronx","value":807},{"key":"Brooklyn","value":603},{"key":"Manhattan","value":170},{"key":"Queens","value":631},{"key":"Staten Island","value":171}]},{"key":"flowering dogwood","values":[{"key":"Bronx","value":150},{"key":"Brooklyn","value":360},{"key":"Manhattan","value":65},{"key":"Queens","value":684},{"key":"Staten Island","value":293}]},{"key":"maple","values":[{"key":"Bronx","value":995},{"key":"Brooklyn","value":445},{"key":"Manhattan","value":37},{"key":"Queens","value":2992},{"key":"Staten Island","value":2611}]},{"key":"kousa dogwood","values":[{"key":"Bronx","value":41},{"key":"Brooklyn","value":72},{"key":"Manhattan","value":13},{"key":"Queens","value":121},{"key":"Staten Island","value":55}]},{"key":"eastern redbud","values":[{"key":"Bronx","value":632},{"key":"Brooklyn","value":796},{"key":"Manhattan","value":50},{"key":"Queens","value":1358},{"key":"Staten Island","value":965}]},{"key":"bald cypress","values":[{"key":"Bronx","value":85},{"key":"Brooklyn","value":645},{"key":"Manhattan","value":89},{"key":"Queens","value":313},{"key":"Staten Island","value":129}]},{"key":"cucumber magnolia","values":[{"key":"Bronx","value":19},{"key":"Brooklyn","value":48},{"key":"Manhattan","value":12},{"key":"Queens","value":52},{"key":"Staten Island","value":38}]},{"key":"serviceberry","values":[{"key":"Bronx","value":307},{"key":"Brooklyn","value":363},{"key":"Manhattan","value":38},{"key":"Queens","value":888},{"key":"Staten Island","value":436}]},{"key":"Osage-orange","values":[{"key":"Bronx","value":3},{"key":"Brooklyn","value":8},{"key":"Manhattan","value":1},{"key":"Queens","value":12},{"key":"Staten Island","value":5}]},{"key":"paperbark maple","values":[{"key":"Bronx","value":35},{"key":"Brooklyn","value":59},{"key":"Manhattan","value":15},{"key":"Queens","value":73},{"key":"Staten Island","value":38}]},{"key":"red pine","values":[{"key":"Bronx","value":10},{"key":"Brooklyn","value":26},{"key":"Manhattan","value":1},{"key":"Queens","value":52},{"key":"Staten Island","value":17}]},{"key":"Scots pine","values":[{"key":"Bronx","value":2},{"key":"Brooklyn","value":3},{"key":"Manhattan","value":2},{"key":"Queens","value":15},{"key":"Staten Island","value":3}]},{"key":"tartar maple","values":[{"key":"Bronx","value":43},{"key":"Brooklyn","value":16},{"key":"Manhattan","value":12},{"key":"Queens","value":50},{"key":"Staten Island","value":32}]},{"key":"black maple","values":[{"key":"Bronx","value":14},{"key":"Brooklyn","value":31},{"key":"Manhattan","value":10},{"key":"Queens","value":23},{"key":"Staten Island","value":36}]},{"key":"blue spruce","values":[{"key":"Bronx","value":16},{"key":"Brooklyn","value":19},{"key":"Manhattan","value":4},{"key":"Queens","value":61},{"key":"Staten Island","value":26}]},{"key":"quaking aspen","values":[{"key":"Bronx","value":5},{"key":"Brooklyn","value":21},{"key":"Manhattan","value":2},{"key":"Queens","value":35},{"key":"Staten Island","value":20}]},{"key":"red horse chestnut","values":[{"key":"Bronx","value":12},{"key":"Brooklyn","value":21},{"key":"Manhattan","value":1},{"key":"Queens","value":58},{"key":"Staten Island","value":24}]},{"key":"black pine","values":[{"key":"Bronx","value":2},{"key":"Brooklyn","value":5},{"key":"Manhattan","value":3},{"key":"Queens","value":24},{"key":"Staten Island","value":3}]},{"key":"Shantung maple","values":[{"key":"Bronx","value":9},{"key":"Brooklyn","value":12},{"key":"Queens","value":27},{"key":"Staten Island","value":11}]},{"key":"European alder","values":[{"key":"Bronx","value":6},{"key":"Brooklyn","value":10},{"key":"Manhattan","value":2},{"key":"Queens","value":17},{"key":"Staten Island","value":12}]},{"key":"Amur maackia","values":[{"key":"Bronx","value":466},{"key":"Brooklyn","value":729},{"key":"Manhattan","value":59},{"key":"Queens","value":675},{"key":"Staten Island","value":268}]},{"key":"European hornbeam","values":[{"key":"Bronx","value":449},{"key":"Brooklyn","value":494},{"key":"Manhattan","value":167},{"key":"Queens","value":803},{"key":"Staten Island","value":186}]},{"key":"bur oak","values":[{"key":"Bronx","value":80},{"key":"Brooklyn","value":158},{"key":"Manhattan","value":36},{"key":"Queens","value":170},{"key":"Staten Island","value":71}]},{"key":"bigtooth aspen","values":[{"key":"Bronx","value":7},{"key":"Brooklyn","value":23},{"key":"Manhattan","value":5},{"key":"Queens","value":37},{"key":"Staten Island","value":22}]},{"key":"trident maple","values":[{"key":"Bronx","value":7},{"key":"Brooklyn","value":12},{"key":"Queens","value":68},{"key":"Staten Island","value":23}]},{"key":"Virginia pine","values":[{"key":"Bronx","value":1},{"key":"Brooklyn","value":3},{"key":"Manhattan","value":3},{"key":"Queens","value":3}]},{"key":"two-winged silverbell","values":[{"key":"Bronx","value":26},{"key":"Brooklyn","value":57},{"key":"Manhattan","value":8},{"key":"Queens","value":73},{"key":"Staten Island","value":57}]},{"key":"pagoda dogwood","values":[{"key":"Bronx","value":18},{"key":"Brooklyn","value":80},{"key":"Manhattan","value":18},{"key":"Queens","value":81},{"key":"Staten Island","value":83}]},{"key":"Japanese hornbeam","values":[{"key":"Bronx","value":74},{"key":"Brooklyn","value":149},{"key":"Manhattan","value":62},{"key":"Queens","value":97},{"key":"Staten Island","value":44}]},{"key":"pine","values":[{"key":"Bronx","value":19},{"key":"Brooklyn","value":45},{"key":"Manhattan","value":3},{"key":"Queens","value":194},{"key":"Staten Island","value":28}]},{"key":"false cypress","values":[{"key":"Bronx","value":13},{"key":"Brooklyn","value":35},{"key":"Queens","value":51},{"key":"Staten Island","value":9}]},{"key":"pitch pine","values":[{"key":"Bronx","value":3},{"key":"Brooklyn","value":9},{"key":"Manhattan","value":5},{"key":"Queens","value":10},{"key":"Staten Island","value":6}]},{"key":"mimosa","values":[{"key":"Bronx","value":17},{"key":"Brooklyn","value":85},{"key":"Manhattan","value":12},{"key":"Queens","value":40},{"key":"Staten Island","value":9}]}]};
 var dataset = d3.layout.stack()(["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"].map(function(fruit,i) {
   return data2.values.map(function(d) {
-    //   console.log(fruit);
-      
-    //   console.log(d);
-    //   console.log(d[fruit]);
-    console.log(i);
-    console.log(d.key);
-    
-    console.log(d.values[i]);
-    
     if (d.values[i] != undefined)
         return {x: d.key, y: +d.values[i].value};
     else
         return {x: d.key, y: +0};
   });
 }));
-console.log(JSON.stringify(dataset));
+console.log(dataset);
 
 // Set x, y and colors
 var x = d3.scale.ordinal()
@@ -108,8 +88,6 @@ var y = d3.scale.linear()
   .range([height, 0]);
 
 var colors = ["#ffa600", "#003f5c", "#ff6361", "#58508d", "#bc5090"];
-
-
 // Define and draw axes
 var yAxis = d3.svg.axis()
   .scale(y)
@@ -134,19 +112,19 @@ svg.append("g")
   .selectAll("text")	
             .style("text-anchor", "end")
             .attr("font-size", "10px")
-            // .attr("dx", "-.8em")
-            // .attr("dy", ".15em")
+            .attr("dx", "-.8em")
+            .attr("dy", "-10px")
             .attr("transform", function(d) {
                 return "rotate(-90)" 
                 });
 
-
-// Create groups for each series, rects for each segment 
 var groups = svg.selectAll("g.cost")
   .data(dataset)
   .enter().append("g")
   .attr("class", "cost")
-  .style("fill", function(d, i) { return colors[i]; });
+  .style("fill", function(d, i) { return colors[i]; })
+  .style("stroke", "white")
+  
 
 var rect = groups.selectAll("rect")
   .data(function(d) { return d; })
@@ -168,20 +146,24 @@ var rect = groups.selectAll("rect")
 
 
 // Draw legend
-var legend = svg.selectAll(".legend")
+var legend = d3.select("#barLegend")
+  .attr("width", 800)
+  .attr("height", 50)
+  .selectAll(".barlegend")
   .data(colors)
-  .enter().append("g")
-  .attr("class", "legend")
-  .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
+  .enter()
+  .append("g")
+  .attr("class", "barlegend")
+  .attr("transform", function(d, i) { return "translate(" + (30+i * 100) + ",10)"; });
  
 legend.append("rect")
-  .attr("x", width - 18)
+  .attr("x", 18)
   .attr("width", 18)
   .attr("height", 18)
   .style("fill", function(d, i) {return colors.slice().reverse()[i];});
  
 legend.append("text")
-  .attr("x", width + 5)
+  .attr("x", 45)
   .attr("y", 9)
   .attr("dy", ".35em")
   .style("text-anchor", "start")
