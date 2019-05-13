@@ -2,7 +2,6 @@ body {
       background-color: white;
       font-family: Arial, Helvetica, sans-serif;
       min-width: 1250px;
-      
     }
     .axis path,
     .axis line {
@@ -44,7 +43,7 @@ body {
       /* border-bottom:  */
     }
     .nyctreemap path:hover {
-      fill:rgb(39, 13, 82) !important;
+      fill:#82acff !important;
       
     }
 
